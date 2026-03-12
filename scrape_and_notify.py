@@ -22,7 +22,7 @@ HISTORY_FILE = "sent_properties.json"
 # ----------------------------------------
 def scrape_latest_properties():
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
-    response = requests.get(URL, headers=headers, timeout=15)
+    response = requests.get(URL, headers=headers, timeout=60)
     response.encoding = "utf-8"
     soup = BeautifulSoup(response.text, "html.parser")
 
