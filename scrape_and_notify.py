@@ -142,7 +142,6 @@ def send_line_message(prop):
     text = (
         f"🏠 新着物件のお知らせ\n"
         f"━━━━━━━━━━━━\n"
-        f"📅 {prop['date']}\n"
         f"🏢 {prop['name']}\n"
     )
     if station_text:
