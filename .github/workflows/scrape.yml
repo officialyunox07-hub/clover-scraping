@@ -2,7 +2,7 @@ name: 物件チェック＆LINE通知
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # 毎日日本時間9時に実行（UTC0時=JST9時）
+    - cron: '0 8 * * *'  # 毎日日本時間17時に実行（UTC8時=JST17時）
   workflow_dispatch:       # 手動実行も可能
 
 jobs:
