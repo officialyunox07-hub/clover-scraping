@@ -22,7 +22,7 @@ HISTORY_FILE = "sent_properties.json"
 # ----------------------------------------
 def scrape_latest_properties():
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
-    response = requests.get(URL, headers=headers, timeout=60)
+    response = requests.get(URL, headers=headers, timeout=15)
     response.encoding = "utf-8"
     soup = BeautifulSoup(response.text, "html.parser")
 
@@ -109,7 +109,25 @@ def save_sent_history(spreadsheet, property_name, date):
     sheet.append_row([property_name, date, datetime.now().strftime("%Y/%m/%d %H:%M")])
 
 # ----------------------------------------
-# 4. LINEに画像つきメッセージを送信
+# 4. 説明文から最寄駅・物件の特徴を抽出
+# ----------------------------------------
+def extract_station_and_feature(description):
+    import re
+    sentences = re.split(r'[！。\n]', description)
+    sentences = [s.strip() for s in sentences if s.strip()]
+
+    # 最寄駅：「駅」と「徒歩」を含む文を全て抽出
+    stations = [s for s in sentences if '駅' in s and '徒歩' in s]
+    station_text = "・".join(stations) if stations else ""
+
+    # 物件の特徴：「物件」を含む最後の文
+    features = [s for s in sentences if '物件' in s]
+    feature_text = features[-1] if features else ""
+
+    return station_text, feature_text
+
+# ----------------------------------------
+# 5. LINEに画像つきメッセージを送信
 # ----------------------------------------
 def send_line_message(prop):
     headers = {
@@ -117,38 +135,36 @@ def send_line_message(prop):
         "Content-Type": "application/json"
     }
 
-    # メッセージ内容を組み立て
-    messages = []
+    # 最寄駅・物件の特徴を抽出
+    station_text, feature_text = extract_station_and_feature(prop["description"])
 
-    # 画像があれば画像メッセージを追加
+    # テキストメッセージを組み立て
+    text = (
+        f"🏠 新着物件のお知らせ\n"
+        f"━━━━━━━━━━━━\n"
+        f"📅 {prop['date']}\n"
+        f"🏢 {prop['name']}\n"
+    )
+    if station_text:
+        text += f"🚉 {station_text}\n"
+    if feature_text:
+        text += f"✨ {feature_text}\n"
+    text += (
+        f"━━━━━━━━━━━━\n"
+        f"🔗 詳細はこちら\n{prop['url']}"
+    )
+
+    # メッセージ順：テキスト→画像
+    messages = []
+    messages.append({"type": "text", "text": text})
+
+    # 画像があれば後に追加
     if prop["image_url"]:
         messages.append({
             "type": "image",
             "originalContentUrl": prop["image_url"],
             "previewImageUrl": prop["image_url"]
         })
-
-    # テキストメッセージ
-    text = (
-        f"🏠 新着物件のお知らせ\n"
-        f"━━━━━━━━━━━━\n"
-        f"📅 {prop['date']}\n"
-        f"🏢 {prop['name']}\n"
-        f"━━━━━━━━━━━━\n"
-        f"🔗 詳細はこちら\n{prop['url']}"
-    )
-    messages.append({"type": "text", "text": text})
-
-    payload = {
-        "to": LINE_CHANNEL_ID,
-        "messages": messages
-    }
-
-    response = requests.post(
-        "https://api.line.me/v2/bot/message/multicast",
-        headers=headers,
-        json={"to": [LINE_CHANNEL_ID], "messages": messages}
-    )
 
     # 友だち全員への一斉送信
     broadcast_response = requests.post(
@@ -160,7 +176,7 @@ def send_line_message(prop):
     return broadcast_response.status_code == 200
 
 # ----------------------------------------
-# 5. メイン処理
+# 6. メイン処理
 # ----------------------------------------
 def main():
     print("サイトをチェック中...")
