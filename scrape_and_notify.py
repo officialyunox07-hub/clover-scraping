@@ -92,7 +92,7 @@ def get_spreadsheet():
     ]
     creds = Credentials.from_service_account_info(creds_dict, scopes=scopes)
     client = gspread.authorize(creds)
-    spreadsheet = client.open("最新物件")
+    spreadsheet = client.open("clover-スクレイピング")
     return spreadsheet
 
 def get_sent_history(spreadsheet):
