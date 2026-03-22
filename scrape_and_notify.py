@@ -46,7 +46,7 @@ def scrape_latest_properties():
             date = dt.get_text(strip=True)
             if i < len(descriptions):
                 dd = descriptions[i]
-link_tag = dd.find("a")
+                link_tag = dd.find("a")
                 property_name = link_tag.get_text(strip=True) if link_tag else dd.get_text(strip=True)
                 property_url = link_tag["href"] if link_tag else ""
                 if property_url and not property_url.startswith("http"):
