@@ -47,18 +47,17 @@ def scrape_latest_properties():
             if i < len(descriptions):
                 dd = descriptions[i]
 link_tag = dd.find("a")
-property_name = link_tag.get_text(strip=True) if link_tag else dd.get_text(strip=True)
-property_url = link_tag["href"] if link_tag else ""
-if property_url and not property_url.startswith("http"):
-    property_url = "https://www.clover-estate.co.jp" + property_url
+                property_name = link_tag.get_text(strip=True) if link_tag else dd.get_text(strip=True)
+                property_url = link_tag["href"] if link_tag else ""
+                if property_url and not property_url.startswith("http"):
+                    property_url = "https://www.clover-estate.co.jp" + property_url
 
-# 物件名またはURLが空の場合はスキップ
-if not property_name or not property_url:
-    continue
+                # 物件名またはURLが空の場合はスキップ
+                if not property_name or not property_url:
+                    continue
 
                 # 物件ページから画像URLを取得
                 image_url = get_property_image(property_url)
-
                 properties.append({
                     "date": date,
                     "name": property_name,
