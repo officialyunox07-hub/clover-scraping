@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>新着物件情報 | クローバー不動産</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Shippori+Mincho:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green: #2d6a4f;
+      --green-light: #40916c;
+      --green-pale: #d8f3dc;
+      --gold: #b5883a;
+      --white: #ffffff;
+      --gray-bg: #f7f9f7;
+      --gray-text: #555;
+      --border: #d0e4d6;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--gray-bg);
+      color: #333;
+    }
+
+    /* ヘッダー */
+    header {
+      background: var(--green);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .logo {
+      font-family: 'Shippori Mincho', serif;
+      color: var(--white);
+      font-size: 20px;
+      letter-spacing: 0.1em;
+    }
+    .logo span {
+      color: #a8d5b5;
+      font-size: 13px;
+      display: block;
+      letter-spacing: 0.2em;
+    }
+    header .tel {
+      color: #a8d5b5;
+      font-size: 13px;
+      text-align: right;
+    }
+    header .tel strong {
+      color: white;
+      font-size: 18px;
+      display: block;
+    }
+
+    /* ヒーローバナー */
+    .hero {
+      background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%);
+      padding: 32px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 200px; height: 200px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 50%;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: var(--gold);
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+    .hero h1 {
+      font-family: 'Shippori Mincho', serif;
+      color: white;
+      font-size: 26px;
+      font-weight: 700;
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+    .hero-sub {
+      color: rgba(255,255,255,0.8);
+      font-size: 13px;
+    }
+
+    /* メインコンテンツ */
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+
+    /* 物件カード */
+    .property-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 16px rgba(45,106,79,0.1);
+      margin-bottom: 24px;
+    }
+
+    .property-image {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      display: block;
+    }
+    .property-image-placeholder {
+      width: 100%;
+      height: 240px;
+      background: linear-gradient(135deg, var(--green-pale), var(--border));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--green);
+      font-size: 40px;
+    }
+
+    .property-body {
+      padding: 20px;
+    }
+
+    .property-name {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .info-item {
+      background: var(--gray-bg);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+    .info-label {
+      font-size: 11px;
+      color: var(--green-light);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      margin-bottom: 4px;
+    }
+    .info-value {
+      font-size: 14px;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 16px 0;
+    }
+
+    .station-info {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: var(--green-pale);
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+    }
+    .station-icon {
+      font-size: 18px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .station-text {
+      font-size: 13px;
+      color: var(--green);
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    .feature-text {
+      font-size: 13px;
+      color: var(--gray-text);
+      line-height: 1.8;
+      border-left: 3px solid var(--green-light);
+      padding-left: 12px;
+      margin-bottom: 16px;
+    }
+
+    .original-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--green-light);
+      text-decoration: none;
+      margin-bottom: 4px;
+    }
+    .original-link:hover { text-decoration: underline; }
+
+    /* 応募ボタン */
+    .cta-section {
+      background: white;
+      border-radius: 12px;
+      padding: 24px 20px;
+      box-shadow: 0 2px 16px rgba(45,106,79,0.1);
+      text-align: center;
+    }
+    .cta-title {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 18px;
+      color: var(--green);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .cta-sub {
+      font-size: 12px;
+      color: var(--gray-text);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .btn-apply {
+      display: block;
+      width: 100%;
+      background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%);
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 16px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      box-shadow: 0 4px 14px rgba(45,106,79,0.35);
+      transition: transform 0.15s, box-shadow 0.15s;
+      margin-bottom: 12px;
+    }
+    .btn-apply:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(45,106,79,0.45);
+    }
+    .btn-tel {
+      display: block;
+      width: 100%;
+      background: white;
+      color: var(--green);
+      font-size: 15px;
+      font-weight: 700;
+      padding: 14px;
+      border-radius: 50px;
+      border: 2px solid var(--green);
+      cursor: pointer;
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      transition: background 0.15s;
+    }
+    .btn-tel:hover {
+      background: var(--green-pale);
+    }
+
+    /* 応募フォーム */
+    .form-section {
+      display: none;
+      background: white;
+      border-radius: 12px;
+      padding: 24px 20px;
+      box-shadow: 0 2px 16px rgba(45,106,79,0.1);
+      margin-top: 16px;
+    }
+    .form-section.active { display: block; }
+
+    .form-title {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 18px;
+      color: var(--green);
+      font-weight: 700;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--green-pale);
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 6px;
+    }
+    .form-group label .required {
+      color: #e63946;
+      margin-left: 4px;
+      font-size: 11px;
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'Noto Sans JP', sans-serif;
+      color: #333;
+      background: var(--gray-bg);
+      transition: border-color 0.15s;
+      outline: none;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: var(--green-light);
+      background: white;
+    }
+    .form-group textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .form-note {
+      font-size: 11px;
+      color: var(--gray-text);
+      margin-top: 4px;
+    }
+
+    .btn-submit {
+      display: block;
+      width: 100%;
+      background: var(--gold);
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 16px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      letter-spacing: 0.1em;
+      box-shadow: 0 4px 14px rgba(181,136,58,0.35);
+      transition: transform 0.15s, box-shadow 0.15s;
+      margin-top: 8px;
+    }
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(181,136,58,0.45);
+    }
+
+    /* フッター */
+    footer {
+      background: var(--green);
+      color: rgba(255,255,255,0.7);
+      text-align: center;
+      padding: 20px;
+      font-size: 12px;
+      margin-top: 32px;
+    }
+    footer strong {
+      color: white;
+      display: block;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    株式会社クローバー
+    <span>CLOVER ESTATE</span>
+  </div>
+  <div class="tel">
+    お問い合わせ
+    <strong>03-6721-0818</strong>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-badge">🏠 新着物件のお知らせ</div>
+  <h1 id="hero-title">物件名が入ります</h1>
+  <p class="hero-sub" id="hero-sub">詳細情報をご確認ください</p>
+</div>
+
+<div class="container">
+
+  <div class="property-card">
+    <div id="property-image-wrap">
+      <div class="property-image-placeholder">🏢</div>
+    </div>
+    <div class="property-body">
+      <h2 class="property-name" id="property-name">物件名</h2>
+
+      <div class="station-info" id="station-info" style="display:none">
+        <span class="station-icon">🚉</span>
+        <span class="station-text" id="station-text"></span>
+      </div>
+
+      <p class="feature-text" id="feature-text"></p>
+
+      <hr class="divider">
+
+      <a class="original-link" id="original-link" href="#" target="_blank">
+        🔗 クローバー公式サイトで詳細を見る
+      </a>
+    </div>
+  </div>
+
+  <div class="cta-section">
+    <p class="cta-title">この物件が気になる方へ</p>
+    <p class="cta-sub">下のボタンからお気軽にお問い合わせください。<br>専門スタッフが丁寧にご対応いたします。</p>
+    <a class="btn-apply" href="#" onclick="showForm(); return false;">📩 この物件に問い合わせる</a>
+    <a class="btn-tel" href="tel:0367210818">📞 電話で問い合わせる</a>
+  </div>
+
+  <div class="form-section" id="form-section">
+    <p class="form-title">📋 お問い合わせフォーム</p>
+    <form id="inquiry-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+      <input type="hidden" name="物件名" id="form-property-name">
+
+      <div class="form-group">
+        <label>お名前<span class="required">※必須</span></label>
+        <input type="text" name="お名前" placeholder="例：山田 太郎" required>
+      </div>
+
+      <div class="form-group">
+        <label>電話番号<span class="required">※必須</span></label>
+        <input type="tel" name="電話番号" placeholder="例：090-1234-5678" required>
+      </div>
+
+      <div class="form-group">
+        <label>メールアドレス</label>
+        <input type="email" name="メールアドレス" placeholder="例：example@gmail.com">
+      </div>
+
+      <div class="form-group">
+        <label>ご希望の連絡方法</label>
+        <select name="連絡方法">
+          <option value="電話">電話が希望</option>
+          <option value="メール">メールが希望</option>
+          <option value="どちらでも">どちらでも可</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>ご質問・ご要望</label>
+        <textarea name="ご質問" placeholder="内見のご希望日時や、気になる点などをご記入ください"></textarea>
+      </div>
+
+      <p class="form-note">※ご入力いただいた情報は物件のお問い合わせ対応のみに使用します。</p>
+
+      <button type="submit" class="btn-submit">✉️ 送信する</button>
+    </form>
+  </div>
+
+</div>
+
+<footer>
+  <strong>株式会社クローバー</strong>
+  東京都渋谷区神宮前４丁目１１-６　TEL: 03-6721-0818<br>
+  営業時間：9:00〜22:00　定休日：水曜日
+</footer>
+
+<script>
+  // URLパラメータから物件情報を取得して表示
+  const params = new URLSearchParams(window.location.search);
+
+  const name = params.get('name') || '物件名';
+  const station = params.get('station') || '';
+  const feature = params.get('feature') || '';
+  const url = params.get('url') || '#';
+  const image = params.get('image') || '';
+
+  // タイトル・物件名
+  document.getElementById('hero-title').textContent = name;
+  document.getElementById('hero-sub').textContent = station || '詳細情報をご確認ください';
+  document.getElementById('property-name').textContent = name;
+  document.getElementById('form-property-name').value = name;
+
+  // 最寄駅
+  if (station) {
+    document.getElementById('station-info').style.display = 'flex';
+    document.getElementById('station-text').textContent = station;
+  }
+
+  // 物件の特徴
+  document.getElementById('feature-text').textContent = feature;
+
+  // 元サイトリンク
+  document.getElementById('original-link').href = url;
+
+  // 物件画像
+  if (image) {
+    document.getElementById('property-image-wrap').innerHTML =
+      `<img class="property-image" src="${decodeURIComponent(image)}" alt="${name}" onerror="this.parentNode.innerHTML='<div class=\\'property-image-placeholder\\'>🏢</div>'">`;
+  }
+
+  // フォームを表示
+  function showForm() {
+    const form = document.getElementById('form-section');
+    form.classList.add('active');
+    form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+</script>
+
+</body>
+</html>
