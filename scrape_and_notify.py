@@ -4,6 +4,8 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 import os
 import json
+import re
+import urllib.parse
 import gspread
 from google.oauth2.service_account import Credentials
 
@@ -15,14 +17,15 @@ LINE_CHANNEL_ID = os.environ["LINE_CHANNEL_ID"]
 GOOGLE_CREDENTIALS_JSON = os.environ["GOOGLE_CREDENTIALS"]
 
 URL = "https://www.clover-estate.co.jp/"
-HISTORY_FILE = "sent_properties.json"
+NETLIFY_BASE_URL = "https://fastidious-biscochitos-991098.netlify.app"
+GOOGLE_FORM_BASE_URL = "https://docs.google.com/forms/d/e/1FAIpQLSe1mfdDaB84CmATLQIHMc5-YRvF-tco7KqzvYl3W1Wxf_Sy7Q/viewform?usp=pp_url&entry.195312494="
 
 # ----------------------------------------
 # 1. サイトから最新物件を取得
 # ----------------------------------------
 def scrape_latest_properties():
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
-    response = requests.get(URL, headers=headers, timeout=15)
+    response = requests.get(URL, headers=headers, timeout=60)
     response.encoding = "utf-8"
     soup = BeautifulSoup(response.text, "html.parser")
 
@@ -58,6 +61,7 @@ def scrape_latest_properties():
 
                 # 物件ページから画像URLを取得
                 image_url = get_property_image(property_url)
+
                 properties.append({
                     "date": date,
                     "name": property_name,
@@ -115,33 +119,50 @@ def save_sent_history(spreadsheet, property_name, date):
 # 4. 説明文から最寄駅・物件の特徴を抽出
 # ----------------------------------------
 def extract_station_and_feature(description):
-    import re
     sentences = re.split(r'[！。\n]', description)
     sentences = [s.strip() for s in sentences if s.strip()]
 
-    # 最寄駅：「駅」と「徒歩」を含む文を全て抽出
     stations = [s for s in sentences if '駅' in s and '徒歩' in s]
     station_text = "・".join(stations) if stations else ""
 
-    # 物件の特徴：「物件」を含む最後の文
     features = [s for s in sentences if '物件' in s]
     feature_text = features[-1] if features else ""
 
     return station_text, feature_text
 
 # ----------------------------------------
-# 5. LINEに画像つきメッセージを送信
+# 5. 物件ページのHTMLを生成してGitHubにコミット
 # ----------------------------------------
-def send_line_message(prop):
+def generate_property_page(prop, station_text, feature_text):
+    safe_name = prop["name"].replace("/", "_").replace(" ", "_")
+    filename = f"property_{safe_name}.html"
+
+    # property.htmlのテンプレートを読み込んでパラメータURLを生成
+    page_url = (
+        f"{NETLIFY_BASE_URL}/property.html"
+        f"?name={urllib.parse.quote(prop['name'])}"
+        f"&station={urllib.parse.quote(station_text)}"
+        f"&feature={urllib.parse.quote(feature_text)}"
+        f"&url={urllib.parse.quote(prop['url'])}"
+        f"&image={urllib.parse.quote(prop['image_url'] or '')}"
+    )
+
+    # Google FormsのURLに物件名を埋め込む
+    form_url = GOOGLE_FORM_BASE_URL + urllib.parse.quote(prop["name"])
+
+    return page_url, form_url
+
+# ----------------------------------------
+# 6. LINEに画像つきメッセージを送信
+# ----------------------------------------
+def send_line_message(prop, page_url, form_url):
     headers = {
         "Authorization": f"Bearer {LINE_CHANNEL_ACCESS_TOKEN}",
         "Content-Type": "application/json"
     }
 
-    # 最寄駅・物件の特徴を抽出
     station_text, feature_text = extract_station_and_feature(prop["description"])
 
-    # テキストメッセージを組み立て
     text = (
         f"🏠 新着物件のお知らせ\n"
         f"━━━━━━━━━━━━\n"
@@ -153,14 +174,13 @@ def send_line_message(prop):
         text += f"✨ {feature_text}\n"
     text += (
         f"━━━━━━━━━━━━\n"
-        f"🔗 詳細はこちら\n{prop['url']}"
+        f"🔍 物件詳細ページ\n{page_url}\n\n"
+        f"📩 お問い合わせはこちら\n{form_url}"
     )
 
-    # メッセージ順：テキスト→画像
     messages = []
     messages.append({"type": "text", "text": text})
 
-    # 画像があれば後に追加
     if prop["image_url"]:
         messages.append({
             "type": "image",
@@ -168,7 +188,6 @@ def send_line_message(prop):
             "previewImageUrl": prop["image_url"]
         })
 
-    # 友だち全員への一斉送信
     broadcast_response = requests.post(
         "https://api.line.me/v2/bot/message/broadcast",
         headers=headers,
@@ -178,7 +197,7 @@ def send_line_message(prop):
     return broadcast_response.status_code == 200
 
 # ----------------------------------------
-# 6. メイン処理
+# 7. メイン処理
 # ----------------------------------------
 def main():
     print("サイトをチェック中...")
@@ -196,11 +215,17 @@ def main():
         key = f"{prop['name']}_{prop['date']}"
         if key not in sent_history:
             print(f"新物件を検知: {prop['name']}")
-            success = send_line_message(prop)
+
+            station_text, feature_text = extract_station_and_feature(prop["description"])
+            page_url, form_url = generate_property_page(prop, station_text, feature_text)
+
+            success = send_line_message(prop, page_url, form_url)
             if success:
                 save_sent_history(spreadsheet, prop["name"], prop["date"])
                 new_count += 1
                 print(f"  → LINE送信完了！")
+                print(f"  → 物件ページ: {page_url}")
+                print(f"  → フォーム: {form_url}")
             else:
                 print(f"  → LINE送信失敗")
         else:
