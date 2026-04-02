@@ -75,13 +75,29 @@ def scrape_latest_properties():
 # ----------------------------------------
 def get_property_image(property_url):
     try:
-        headers = {"User-Agent": "Mozilla/5.0"}
-        res = requests.get(property_url, headers=headers, timeout=10)
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+        res = requests.get(property_url, headers=headers, timeout=30)
         res.encoding = "utf-8"
         soup = BeautifulSoup(res.text, "html.parser")
-        img = soup.find("img", {"src": lambda s: s and "img-asp.jp" in s})
-        if img:
-            return img["src"]
+
+        # 物件IDをURLから取得（例：cl102295023）
+        match = re.search(r'(cl\d+)', property_url)
+        if match:
+            property_id = match.group(1).replace("cl", "")
+            # 画像URLのパターンで検索
+            for img in soup.find_all("img"):
+                src = img.get("src", "")
+                if "img-asp.jp" in src and property_id in src:
+                    # 画像URLが正しい形式か確認（ファイル名が空でないか）
+                    if re.search(r'/\d+_\d+', src):
+                        return src
+
+        # フォールバック：img-asp.jpの画像を探す
+        for img in soup.find_all("img"):
+            src = img.get("src", "")
+            if "img-asp.jp/bkn/" in src and re.search(r'/\d{6,}', src):
+                return src
+
     except:
         pass
     return None
@@ -175,8 +191,8 @@ def generate_property_html(prop, station_text, feature_text):
     }}
     * {{ margin: 0; padding: 0; box-sizing: border-box; }}
     body {{ font-family: 'Noto Sans JP', sans-serif; background: var(--gray-bg); color: #333; }}
-    header {{ background: var(--green); padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }}
-    .logo {{ font-family: 'Shippori Mincho', serif; color: var(--white); font-size: 20px; letter-spacing: 0.1em; }}
+    header {{ background: var(--green); padding: 16px 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }}
+    .logo {{ font-family: 'Shippori Mincho', serif; color: var(--white); font-size: 20px; letter-spacing: 0.1em; text-align: center; }}
     .logo span {{ color: #a8d5b5; font-size: 13px; display: block; letter-spacing: 0.2em; }}
     header .tel {{ color: #a8d5b5; font-size: 13px; text-align: right; }}
     header .tel strong {{ color: white; font-size: 18px; display: block; }}
@@ -199,8 +215,7 @@ def generate_property_html(prop, station_text, feature_text):
     .cta-section {{ background: white; border-radius: 12px; padding: 24px 20px; box-shadow: 0 2px 16px rgba(45,106,79,0.1); text-align: center; margin-bottom: 24px; }}
     .cta-title {{ font-family: 'Shippori Mincho', serif; font-size: 18px; color: var(--green); font-weight: 700; margin-bottom: 8px; }}
     .cta-sub {{ font-size: 12px; color: var(--gray-text); margin-bottom: 20px; line-height: 1.6; }}
-    .btn-apply {{ display: block; width: 100%; background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%); color: white; font-size: 16px; font-weight: 700; padding: 16px; border-radius: 50px; text-decoration: none; letter-spacing: 0.1em; box-shadow: 0 4px 14px rgba(45,106,79,0.35); margin-bottom: 12px; }}
-    .btn-tel {{ display: block; width: 100%; background: white; color: var(--green); font-size: 15px; font-weight: 700; padding: 14px; border-radius: 50px; border: 2px solid var(--green); text-decoration: none; }}
+    .btn-apply {{ display: block; width: 100%; background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%); color: white; font-size: 16px; font-weight: 700; padding: 16px; border-radius: 50px; text-decoration: none; letter-spacing: 0.1em; box-shadow: 0 4px 14px rgba(45,106,79,0.35); }}
     .form-section {{ background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 16px rgba(45,106,79,0.1); }}
     .form-title {{ font-family: 'Shippori Mincho', serif; font-size: 18px; color: var(--green); font-weight: 700; padding: 20px; border-bottom: 2px solid var(--green-pale); }}
     .form-iframe {{ width: 100%; height: 900px; border: none; display: block; }}
@@ -211,7 +226,6 @@ def generate_property_html(prop, station_text, feature_text):
 <body>
 <header>
   <div class="logo">株式会社クローバー<span>CLOVER ESTATE</span></div>
-  <div class="tel">お問い合わせ<strong>03-6721-0818</strong></div>
 </header>
 <div class="hero">
   <div class="hero-badge">🏠 新着物件のお知らせ</div>
@@ -232,7 +246,6 @@ def generate_property_html(prop, station_text, feature_text):
     <p class="cta-title">この物件が気になる方へ</p>
     <p class="cta-sub">下のボタンからお気軽にお問い合わせください。<br>専門スタッフが丁寧にご対応いたします。</p>
     <a class="btn-apply" href="#inquiry">📩 この物件に問い合わせる</a>
-    <a class="btn-tel" href="tel:0367210818">📞 電話で問い合わせる</a>
   </div>
   <div class="form-section" id="inquiry">
     <p class="form-title">📋 お問い合わせフォーム</p>
