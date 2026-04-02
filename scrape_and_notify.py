@@ -103,7 +103,59 @@ def get_property_image(property_url):
     return None
 
 # ----------------------------------------
-# 3. 送信済み物件の履歴をGoogleスプレッドシートで管理
+# 3. 物件詳細ページから概要・説明文を取得
+# ----------------------------------------
+def get_property_details(property_url):
+    details = {}
+    full_description = ""
+    try:
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+        res = requests.get(property_url, headers=headers, timeout=30)
+        res.encoding = "utf-8"
+        soup = BeautifulSoup(res.text, "html.parser")
+
+        # 物件概要テーブルを取得
+        summary = soup.find("div", class_="summaryInner")
+        if summary:
+            rows = summary.find_all("tr")
+            skip_keys = {"QRコード", "取扱会社", "建築確認番号", "国土法届出要否", "物件番号", "取引条件の有効期限"}
+            for row in rows:
+                th = row.find("th")
+                if not th:
+                    continue
+                key = th.get_text(strip=True)
+                if key in skip_keys:
+                    continue
+                tds = row.find_all("td")
+                if not tds:
+                    continue
+                # 設備条件はリスト形式
+                if key == "設備条件":
+                    items = [li.get_text(strip=True) for li in tds[0].find_all("li")]
+                    value = "　".join(items)
+                # 交通はリスト形式
+                elif key == "交通":
+                    items = [li.get_text(strip=True) for li in tds[0].find_all("li")]
+                    value = "\n".join(items)
+                else:
+                    value = tds[0].get_text(separator=" ", strip=True)
+                if value and value != "-":
+                    details[key] = value
+
+        # 説明文（備考欄以外の紹介文）を取得
+        desc_area = soup.find("div", class_="bkn-comment")
+        if not desc_area:
+            desc_area = soup.find("div", class_="comment")
+        if desc_area:
+            full_description = desc_area.get_text(separator="\n", strip=True)
+
+    except Exception as e:
+        print(f"  物件詳細取得エラー: {e}")
+
+    return details, full_description
+
+# ----------------------------------------
+# 4. 送信済み物件の履歴をGoogleスプレッドシートで管理
 # ----------------------------------------
 def get_spreadsheet():
     creds_dict = json.loads(GOOGLE_CREDENTIALS_JSON)
@@ -130,7 +182,7 @@ def save_sent_history(spreadsheet, property_name, date):
     sheet.append_row([property_name, date, datetime.now().strftime("%Y/%m/%d %H:%M")])
 
 # ----------------------------------------
-# 4. 説明文から最寄駅・物件の特徴を抽出
+# 5. 説明文から最寄駅・物件の特徴を抽出
 # ----------------------------------------
 def extract_station_and_feature(description):
     sentences = re.split(r'[！。\n]', description)
@@ -145,9 +197,9 @@ def extract_station_and_feature(description):
     return station_text, feature_text
 
 # ----------------------------------------
-# 5. 物件ページのHTMLを生成
+# 6. 物件ページのHTMLを生成
 # ----------------------------------------
-def generate_property_html(prop, station_text, feature_text):
+def generate_property_html(prop, station_text, feature_text, details, full_description):
     safe_name = re.sub(r'[\\/:*?"<>|\'「」『』【】]', '', prop["name"])
     filename = f"property_{safe_name}.html"
     page_url = f"{NETLIFY_BASE_URL}/{filename}"
@@ -167,9 +219,34 @@ def generate_property_html(prop, station_text, feature_text):
           <span class="station-text">{station_text}</span>
         </div>'''
 
-    feature_html = ""
-    if feature_text:
-        feature_html = f'<p class="feature-text">{feature_text}</p>'
+    # 説明文：全文を表示（取得できた場合はfull_description、なければdescription）
+    desc_text = full_description if full_description else prop["description"]
+    desc_paragraphs = ""
+    for line in desc_text.split("\n"):
+        line = line.strip()
+        if line:
+            desc_paragraphs += f'<p class="desc-line">{line}</p>\n'
+    description_html = f'<div class="description-block">{desc_paragraphs}</div>' if desc_paragraphs else ""
+
+    # 物件概要テーブル
+    details_html = ""
+    if details:
+        rows_html = ""
+        for key, value in details.items():
+            val_formatted = value.replace("\n", "<br>")
+            rows_html += f'''
+            <tr>
+              <th>{key}</th>
+              <td>{val_formatted}</td>
+            </tr>'''
+        details_html = f'''
+  <div class="details-section">
+    <h3 class="section-title">📋 物件概要</h3>
+    <table class="details-table">
+      <tbody>{rows_html}
+      </tbody>
+    </table>
+  </div>'''
 
     html = f'''<!DOCTYPE html>
 <html lang="ja">
@@ -194,8 +271,6 @@ def generate_property_html(prop, station_text, feature_text):
     header {{ background: var(--green); padding: 16px 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }}
     .logo {{ font-family: 'Shippori Mincho', serif; color: var(--white); font-size: 20px; letter-spacing: 0.1em; text-align: center; }}
     .logo span {{ color: #a8d5b5; font-size: 13px; display: block; letter-spacing: 0.2em; }}
-    header .tel {{ color: #a8d5b5; font-size: 13px; text-align: right; }}
-    header .tel strong {{ color: white; font-size: 18px; display: block; }}
     .hero {{ background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%); padding: 32px 24px; text-align: center; }}
     .hero-badge {{ display: inline-block; background: var(--gold); color: white; font-size: 12px; font-weight: 700; letter-spacing: 0.15em; padding: 4px 14px; border-radius: 20px; margin-bottom: 12px; }}
     .hero h1 {{ font-family: 'Shippori Mincho', serif; color: white; font-size: 24px; font-weight: 700; line-height: 1.4; }}
@@ -208,10 +283,16 @@ def generate_property_html(prop, station_text, feature_text):
     .station-info {{ display: flex; align-items: flex-start; gap: 10px; background: var(--green-pale); border-radius: 8px; padding: 12px 14px; margin-bottom: 14px; }}
     .station-icon {{ font-size: 18px; flex-shrink: 0; }}
     .station-text {{ font-size: 13px; color: var(--green); line-height: 1.6; font-weight: 500; }}
-    .feature-text {{ font-size: 13px; color: var(--gray-text); line-height: 1.8; border-left: 3px solid var(--green-light); padding-left: 12px; margin-bottom: 16px; }}
+    .description-block {{ margin-bottom: 16px; }}
+    .desc-line {{ font-size: 13px; color: var(--gray-text); line-height: 1.9; padding: 2px 0; }}
     .divider {{ border: none; border-top: 1px solid var(--border); margin: 16px 0; }}
     .original-link {{ display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--green-light); text-decoration: none; }}
     .original-link:hover {{ text-decoration: underline; }}
+    .details-section {{ background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 16px rgba(45,106,79,0.1); margin-bottom: 24px; }}
+    .section-title {{ font-family: 'Shippori Mincho', serif; font-size: 18px; color: var(--green); font-weight: 700; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--green-pale); }}
+    .details-table {{ width: 100%; border-collapse: collapse; font-size: 13px; }}
+    .details-table th {{ background: var(--green-pale); color: var(--green); font-weight: 700; padding: 10px 12px; text-align: left; width: 35%; vertical-align: top; border-bottom: 1px solid var(--border); }}
+    .details-table td {{ padding: 10px 12px; color: #333; border-bottom: 1px solid var(--border); line-height: 1.7; vertical-align: top; }}
     .cta-section {{ background: white; border-radius: 12px; padding: 24px 20px; box-shadow: 0 2px 16px rgba(45,106,79,0.1); text-align: center; margin-bottom: 24px; }}
     .cta-title {{ font-family: 'Shippori Mincho', serif; font-size: 18px; color: var(--green); font-weight: 700; margin-bottom: 8px; }}
     .cta-sub {{ font-size: 12px; color: var(--gray-text); margin-bottom: 20px; line-height: 1.6; }}
@@ -237,11 +318,12 @@ def generate_property_html(prop, station_text, feature_text):
     <div class="property-body">
       <h2 class="property-name">{prop["name"]}</h2>
       {station_html}
-      {feature_html}
+      {description_html}
       <hr class="divider">
       <a class="original-link" href="{prop["url"]}" target="_blank">🔗 クローバー公式サイトで詳細を見る</a>
     </div>
   </div>
+  {details_html}
   <div class="cta-section">
     <p class="cta-title">この物件が気になる方へ</p>
     <p class="cta-sub">下のボタンからお気軽にお問い合わせください。<br>専門スタッフが丁寧にご対応いたします。</p>
@@ -343,7 +425,8 @@ def main():
             print(f"新物件を検知: {prop['name']}")
 
             station_text, feature_text = extract_station_and_feature(prop["description"])
-            filename, page_url, html_content = generate_property_html(prop, station_text, feature_text)
+            details, full_description = get_property_details(prop["url"])
+            filename, page_url, html_content = generate_property_html(prop, station_text, feature_text, details, full_description)
 
             # HTMLをGitHubにコミット→Netlifyが自動公開
             commit_html_to_github(filename, html_content)
