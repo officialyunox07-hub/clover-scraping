@@ -21,8 +21,6 @@
     header { background: var(--green); padding: 16px 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
     .logo { font-family: 'Shippori Mincho', serif; color: var(--white); font-size: 20px; letter-spacing: 0.1em; text-align: center; }
     .logo span { color: #a8d5b5; font-size: 13px; display: block; letter-spacing: 0.2em; }
-    header .tel { color: #a8d5b5; font-size: 13px; text-align: right; }
-    header .tel strong { color: white; font-size: 18px; display: block; }
     .hero { background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%); padding: 32px 24px; text-align: center; }
     .hero-badge { display: inline-block; background: var(--gold); color: white; font-size: 12px; font-weight: 700; letter-spacing: 0.15em; padding: 4px 14px; border-radius: 20px; margin-bottom: 12px; }
     .hero h1 { font-family: 'Shippori Mincho', serif; color: white; font-size: 24px; font-weight: 700; line-height: 1.4; }
@@ -35,10 +33,16 @@
     .station-info { display: flex; align-items: flex-start; gap: 10px; background: var(--green-pale); border-radius: 8px; padding: 12px 14px; margin-bottom: 14px; }
     .station-icon { font-size: 18px; flex-shrink: 0; }
     .station-text { font-size: 13px; color: var(--green); line-height: 1.6; font-weight: 500; }
-    .feature-text { font-size: 13px; color: var(--gray-text); line-height: 1.8; border-left: 3px solid var(--green-light); padding-left: 12px; margin-bottom: 16px; }
+    .description-block { margin-bottom: 16px; }
+    .desc-line { font-size: 13px; color: var(--gray-text); line-height: 1.9; padding: 2px 0; }
     .divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
     .original-link { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--green-light); text-decoration: none; }
     .original-link:hover { text-decoration: underline; }
+    .details-section { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 16px rgba(45,106,79,0.1); margin-bottom: 24px; }
+    .section-title { font-family: 'Shippori Mincho', serif; font-size: 18px; color: var(--green); font-weight: 700; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--green-pale); }
+    .details-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .details-table th { background: var(--green-pale); color: var(--green); font-weight: 700; padding: 10px 12px; text-align: left; width: 35%; vertical-align: top; border-bottom: 1px solid var(--border); }
+    .details-table td { padding: 10px 12px; color: #333; border-bottom: 1px solid var(--border); line-height: 1.7; vertical-align: top; }
     .cta-section { background: white; border-radius: 12px; padding: 24px 20px; box-shadow: 0 2px 16px rgba(45,106,79,0.1); text-align: center; margin-bottom: 24px; }
     .cta-title { font-family: 'Shippori Mincho', serif; font-size: 18px; color: var(--green); font-weight: 700; margin-bottom: 8px; }
     .cta-sub { font-size: 12px; color: var(--gray-text); margin-bottom: 20px; line-height: 1.6; }
@@ -60,7 +64,7 @@
 </div>
 <div class="container">
   <div class="property-card">
-    <img class="property-image" src="https://cdn.img-asp.jp/bkn/102887956_1_652_555_3.jpg?t=01774948580" alt="『南雪ヶ谷ハイデンス』" onerror="this.style.display='none'">
+    <img class="property-image" src="https://cdn.img-asp.jp/bkn/102887956_1_652_555_3.jpg?t=01775183062" alt="『南雪ヶ谷ハイデンス』" onerror="this.style.display='none'">
     <div class="property-body">
       <h2 class="property-name">『南雪ヶ谷ハイデンス』</h2>
       
@@ -68,10 +72,99 @@
           <span class="station-icon">🚉</span>
           <span class="station-text">池上線「雪が谷大塚」駅徒歩10分の閑静な住宅街に立地</span>
         </div>
-      <p class="feature-text">3階部分の新規リノベーション物件です</p>
+      <div class="description-block"><p class="desc-line">大田区南雪谷3丁目 に 『南雪ヶ谷ハイデンス』 の新着物件が発表されました！！ 池上線「雪が谷大塚」駅徒歩10分の閑静な住宅街に立地！ ペット飼育可能♪ 5階建ての低層マンション♪管理は東急コミュニティーが担当し管理体制良好！！ 3階部分の新規リノベーション物件です！！</p>
+</div>
       <hr class="divider">
       <a class="original-link" href="https://www.clover-estate.co.jp/bkndetail/%E5%8D%97%E9%9B%AA%E3%83%B6%E8%B0%B7%E3%83%8F%E3%82%A4%E3%83%87%E3%83%B3%E3%82%B9/cl102887956.html" target="_blank">🔗 クローバー公式サイトで詳細を見る</a>
     </div>
+  </div>
+  
+  <div class="details-section">
+    <h3 class="section-title">📋 物件概要</h3>
+    <table class="details-table">
+      <tbody>
+            <tr>
+              <th>所在地</th>
+              <td>東京都 大田区 南雪谷 ３丁目20-10</td>
+            </tr>
+            <tr>
+              <th>交通</th>
+              <td>東急池上線「雪が谷大塚」駅 徒歩10分<br>東急多摩川線「沼部」駅 徒歩27分<br>都営浅草線「西馬込」駅 徒歩27分</td>
+            </tr>
+            <tr>
+              <th>間取り/詳細</th>
+              <td>3LDK</td>
+            </tr>
+            <tr>
+              <th>専有面積/バルコニー面積</th>
+              <td>63.94㎡/6.91㎡</td>
+            </tr>
+            <tr>
+              <th>価格</th>
+              <td>5,780万円</td>
+            </tr>
+            <tr>
+              <th>管理費</th>
+              <td>20,100円</td>
+            </tr>
+            <tr>
+              <th>修繕積立金</th>
+              <td>13,810円</td>
+            </tr>
+            <tr>
+              <th>土地の敷金/保証金</th>
+              <td>-/-</td>
+            </tr>
+            <tr>
+              <th>土地権利</th>
+              <td>所有権</td>
+            </tr>
+            <tr>
+              <th>種別/構造</th>
+              <td>中古マンション/鉄筋コンクリート</td>
+            </tr>
+            <tr>
+              <th>築年月（築年数）</th>
+              <td>1980年 5月        (築45年)</td>
+            </tr>
+            <tr>
+              <th>所在階/階建</th>
+              <td>3階/5階建</td>
+            </tr>
+            <tr>
+              <th>管理組合有無</th>
+              <td>有</td>
+            </tr>
+            <tr>
+              <th>管理員の勤務形態</th>
+              <td>日勤</td>
+            </tr>
+            <tr>
+              <th>取引態様</th>
+              <td>仲介</td>
+            </tr>
+            <tr>
+              <th>引渡し</th>
+              <td>即時</td>
+            </tr>
+            <tr>
+              <th>リフォーム</th>
+              <td>2026年3月 キッチン 浴室 トイレ 壁 床 全室</td>
+            </tr>
+            <tr>
+              <th>リノベーション</th>
+              <td>2026年3月 キッチン・浴室・トイレ・壁・床・全室</td>
+            </tr>
+            <tr>
+              <th>設備条件</th>
+              <td>ペット相談　ペット飼育可　リノベーション済　エレベーター　駐輪場　食器洗い乾燥機　システムキッチン　対面式キッチン　浴室乾燥機　TVモニタ付インターホン</td>
+            </tr>
+            <tr>
+              <th>備考</th>
+              <td>◆お問い合わせ当日内覧可能◆ ■住宅ローン支払例■【月々返済額　15万551円】頭金0円　ボーナス返済額0円　借入額5780万円　金利0.52％（変動金利）　35年返済の場合　●住宅ローン、諸費用ローンお気軽にご相談下さい！</td>
+            </tr>
+      </tbody>
+    </table>
   </div>
   <div class="cta-section">
     <p class="cta-title">この物件が気になる方へ</p>
