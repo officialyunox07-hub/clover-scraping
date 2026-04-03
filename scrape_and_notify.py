@@ -297,9 +297,6 @@ def generate_property_html(prop, station_text, feature_text, details, full_descr
     .cta-title {{ font-family: 'Shippori Mincho', serif; font-size: 18px; color: var(--green); font-weight: 700; margin-bottom: 8px; }}
     .cta-sub {{ font-size: 12px; color: var(--gray-text); margin-bottom: 20px; line-height: 1.6; }}
     .btn-apply {{ display: block; width: 100%; background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%); color: white; font-size: 16px; font-weight: 700; padding: 16px; border-radius: 50px; text-decoration: none; letter-spacing: 0.1em; box-shadow: 0 4px 14px rgba(45,106,79,0.35); }}
-    .form-section {{ background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 16px rgba(45,106,79,0.1); }}
-    .form-title {{ font-family: 'Shippori Mincho', serif; font-size: 18px; color: var(--green); font-weight: 700; padding: 20px; border-bottom: 2px solid var(--green-pale); }}
-    .form-iframe {{ width: 100%; height: 900px; border: none; display: block; }}
     footer {{ background: var(--green); color: rgba(255,255,255,0.7); text-align: center; padding: 20px; font-size: 12px; }}
     footer strong {{ color: white; display: block; font-size: 14px; margin-bottom: 4px; }}
   </style>
@@ -327,11 +324,7 @@ def generate_property_html(prop, station_text, feature_text, details, full_descr
   <div class="cta-section">
     <p class="cta-title">この物件が気になる方へ</p>
     <p class="cta-sub">下のボタンからお気軽にお問い合わせください。<br>専門スタッフが丁寧にご対応いたします。</p>
-    <a class="btn-apply" href="#inquiry">📩 この物件に問い合わせる</a>
-  </div>
-  <div class="form-section" id="inquiry">
-    <p class="form-title">📋 お問い合わせフォーム</p>
-    <iframe class="form-iframe" src="{form_url}"></iframe>
+    <a class="btn-apply" href="{form_url}" target="_blank">📩 この物件に問い合わせる</a>
   </div>
 </div>
 <footer>
