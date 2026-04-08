@@ -17,7 +17,7 @@ LINE_CHANNEL_ACCESS_TOKEN = os.environ["LINE_CHANNEL_ACCESS_TOKEN"]
 GOOGLE_CREDENTIALS_JSON = os.environ["GOOGLE_CREDENTIALS"]
 
 URL = "https://www.clover-estate.co.jp/"
-NETLIFY_BASE_URL = "https://fastidious-biscochitos-991098.netlify.app"
+NETLIFY_BASE_URL = "https://officialyunox07-hub.github.io/clover-scraping"
 GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSe1mfdDaB84CmATLQIHMc5-YRvF-tco7KqzvYl3W1Wxf_Sy7Q/viewform?usp=pp_url&entry.195312494="
 
 # ----------------------------------------
