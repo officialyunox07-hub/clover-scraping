@@ -29,6 +29,7 @@ def scrape_latest_properties():
     response.encoding = "utf-8"
     soup = BeautifulSoup(response.text, "html.parser")
 
+    # 「本日の最新物件」セクションを探す
     section_title = None
     for h2 in soup.find_all("h2"):
         if "本日の最新物件" in h2.get_text():
@@ -38,13 +39,24 @@ def scrape_latest_properties():
     if not section_title:
         return []
 
-    dl = section_title.find_next("dl")
     properties = []
 
+    # 新形式：セクション内のテキストブロックからリンクを探す
+    # h2の次の兄弟要素を辿って「最新情報をもっと見る」リンクまでの範囲を取得
+    current = section_title.find_next_sibling()
+    blocks = []
+    while current:
+        text = current.get_text(strip=True)
+        if "最新情報をもっと見る" in text or current.name == "h2":
+            break
+        blocks.append(current)
+        current = current.find_next_sibling()
+
+    # 旧形式（dl）も試す
+    dl = section_title.find_next("dl")
     if dl:
         items = dl.find_all("dt")
         descriptions = dl.find_all("dd")
-
         for i, dt in enumerate(items):
             date = dt.get_text(strip=True)
             if i < len(descriptions):
@@ -54,12 +66,9 @@ def scrape_latest_properties():
                 property_url = link_tag["href"] if link_tag else ""
                 if property_url and not property_url.startswith("http"):
                     property_url = "https://www.clover-estate.co.jp" + property_url
-
                 if not property_name or not property_url:
                     continue
-
                 image_url = get_property_image(property_url)
-
                 properties.append({
                     "date": date,
                     "name": property_name,
@@ -67,6 +76,61 @@ def scrape_latest_properties():
                     "image_url": image_url,
                     "description": dd.get_text(separator=" ", strip=True)
                 })
+    else:
+        # 新形式：ページ全体からbkndetailリンクを持つ日付付きブロックを探す
+        # セクション内のすべてのリンクを取得
+        section_html = soup.find("h2", string=lambda t: t and "本日の最新物件" in t)
+        if not section_html:
+            for h2 in soup.find_all("h2"):
+                if "本日の最新物件" in h2.get_text():
+                    section_html = h2
+                    break
+
+        if section_html:
+            # セクション以降のすべてのテキストブロックを解析
+            all_links = []
+            node = section_html.find_next()
+            while node:
+                if node.name == "h2" and "本日の最新物件" not in node.get_text():
+                    break
+                if node.name == "a" and node.get("href", "").find("bkndetail") != -1:
+                    href = node["href"]
+                    if not href.startswith("http"):
+                        href = "https://www.clover-estate.co.jp" + href
+                    property_name = node.get_text(strip=True)
+                    # 日付を前のテキストから探す
+                    date = ""
+                    prev = node.find_previous(string=re.compile(r'\d{4}/\d{2}/\d{2}'))
+                    if prev:
+                        date_match = re.search(r'\d{4}/\d{2}/\d{2}', str(prev))
+                        if date_match:
+                            date = date_match.group()
+                    # 説明文を取得（リンクの親要素のテキスト）
+                    parent = node.parent
+                    description = parent.get_text(separator=" ", strip=True) if parent else ""
+                    if property_name and href:
+                        all_links.append({
+                            "date": date,
+                            "name": property_name,
+                            "url": href,
+                            "description": description
+                        })
+                node = node.find_next()
+
+            # 重複除去
+            seen = set()
+            for item in all_links:
+                key = item["url"]
+                if key not in seen:
+                    seen.add(key)
+                    image_url = get_property_image(item["url"])
+                    properties.append({
+                        "date": item["date"],
+                        "name": item["name"],
+                        "url": item["url"],
+                        "image_url": image_url,
+                        "description": item["description"]
+                    })
 
     return properties
 
