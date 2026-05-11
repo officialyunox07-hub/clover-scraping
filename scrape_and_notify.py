@@ -213,14 +213,21 @@ def get_sent_history(spreadsheet):
     try:
         sheet = spreadsheet.worksheet("送信履歴")
     except:
-        sheet = spreadsheet.add_worksheet(title="送信履歴", rows=1000, cols=3)
-        sheet.append_row(["物件名", "日付", "送信日時"])
+        sheet = spreadsheet.add_worksheet(title="送信履歴", rows=1000, cols=4)
+        sheet.append_row(["物件名", "日付", "送信日時", "URL"])
     records = sheet.get_all_records()
-    return set(f"{r['物件名']}_{r['日付']}" for r in records)
+    # URLベースで照合（URLがある場合）、なければ物件名+日付
+    history = set()
+    for r in records:
+        if r.get("URL"):
+            history.add(r["URL"])
+        else:
+            history.add(f"{r['物件名']}_{r['日付']}")
+    return history
 
-def save_sent_history(spreadsheet, property_name, date):
+def save_sent_history(spreadsheet, property_name, date, url=""):
     sheet = spreadsheet.worksheet("送信履歴")
-    sheet.append_row([property_name, date, datetime.now().strftime("%Y/%m/%d %H:%M")])
+    sheet.append_row([property_name, date, datetime.now().strftime("%Y/%m/%d %H:%M"), url])
 
 # ----------------------------------------
 # 5. 説明文から最寄駅・物件の特徴を抽出
@@ -454,7 +461,7 @@ def main():
 
     new_count = 0
     for prop in properties:
-        key = f"{prop['name']}_{prop['date']}"
+        key = prop["url"]  # URLベースで照合
         if key not in sent_history:
             print(f"新物件を検知: {prop['name']}")
 
@@ -462,13 +469,11 @@ def main():
             details, full_description = get_property_details(prop["url"])
             filename, page_url, html_content = generate_property_html(prop, station_text, feature_text, details, full_description)
 
-            # HTMLをGitHubにコミット→Netlifyが自動公開
             commit_html_to_github(filename, html_content)
 
-            # LINEに送信
             success = send_line_message(prop, page_url, station_text, feature_text)
             if success:
-                save_sent_history(spreadsheet, prop["name"], prop["date"])
+                save_sent_history(spreadsheet, prop["name"], prop["date"], prop["url"])
                 new_count += 1
                 print(f"  → LINE送信完了！")
                 print(f"  → 物件ページURL: {page_url}")
