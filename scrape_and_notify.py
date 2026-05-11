@@ -459,33 +459,31 @@ def main():
     spreadsheet = get_spreadsheet()
     sent_history = get_sent_history(spreadsheet)
 
-    new_count = 0
-    for prop in properties:
-        key = prop["url"]  # URLベースで照合
-        if key not in sent_history:
-            print(f"新物件を検知: {prop['name']}")
+    # 最新の1件だけを対象にする
+    latest_prop = properties[0]
+    key = latest_prop["url"]
 
-            station_text, feature_text = extract_station_and_feature(prop["description"])
-            details, full_description = get_property_details(prop["url"])
-            filename, page_url, html_content = generate_property_html(prop, station_text, feature_text, details, full_description)
-
-            commit_html_to_github(filename, html_content)
-
-            success = send_line_message(prop, page_url, station_text, feature_text)
-            if success:
-                save_sent_history(spreadsheet, prop["name"], prop["date"], prop["url"])
-                new_count += 1
-                print(f"  → LINE送信完了！")
-                print(f"  → 物件ページURL: {page_url}")
-            else:
-                print(f"  → LINE送信失敗")
-        else:
-            print(f"送信済みのためスキップ: {prop['name']}")
-
-    if new_count == 0:
+    if key in sent_history:
+        print(f"送信済みのためスキップ: {latest_prop['name']}")
         print("新しい物件はありませんでした。")
+        return
+
+    print(f"新物件を検知: {latest_prop['name']}")
+
+    station_text, feature_text = extract_station_and_feature(latest_prop["description"])
+    details, full_description = get_property_details(latest_prop["url"])
+    filename, page_url, html_content = generate_property_html(latest_prop, station_text, feature_text, details, full_description)
+
+    commit_html_to_github(filename, html_content)
+
+    success = send_line_message(latest_prop, page_url, station_text, feature_text)
+    if success:
+        save_sent_history(spreadsheet, latest_prop["name"], latest_prop["date"], latest_prop["url"])
+        print(f"  → LINE送信完了！")
+        print(f"  → 物件ページURL: {page_url}")
+        print(f"\n✅ 完了！新物件をLINEで送信しました。")
     else:
-        print(f"\n✅ 完了！{new_count}件の新物件をLINEで送信しました。")
+        print(f"  → LINE送信失敗")
 
 if __name__ == "__main__":
     main()
