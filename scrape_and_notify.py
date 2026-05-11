@@ -213,21 +213,17 @@ def get_sent_history(spreadsheet):
     try:
         sheet = spreadsheet.worksheet("送信履歴")
     except:
-        sheet = spreadsheet.add_worksheet(title="送信履歴", rows=1000, cols=4)
-        sheet.append_row(["物件名", "日付", "送信日時", "URL"])
+        sheet = spreadsheet.add_worksheet(title="送信履歴", rows=1000, cols=3)
+        sheet.append_row(["物件名", "日付", "送信日時"])
     records = sheet.get_all_records()
-    # URLベースで照合（URLがある場合）、なければ物件名+日付
-    history = set()
-    for r in records:
-        if r.get("URL"):
-            history.add(r["URL"])
-        else:
-            history.add(f"{r['物件名']}_{r['日付']}")
-    return history
+    # 物件名から『』を除去して照合
+    return set(re.sub(r'[『』]', '', str(r['物件名'])) for r in records if r['物件名'])
 
 def save_sent_history(spreadsheet, property_name, date, url=""):
     sheet = spreadsheet.worksheet("送信履歴")
-    sheet.append_row([property_name, date, datetime.now().strftime("%Y/%m/%d %H:%M"), url])
+    # 物件名から『』を除去して保存
+    clean_name = re.sub(r'[『』]', '', property_name)
+    sheet.append_row([clean_name, date, datetime.now().strftime("%Y/%m/%d %H:%M")])
 
 # ----------------------------------------
 # 5. 説明文から最寄駅・物件の特徴を抽出
@@ -461,7 +457,7 @@ def main():
 
     # 最新の1件だけを対象にする
     latest_prop = properties[0]
-    key = latest_prop["url"]
+    key = re.sub(r'[『』]', '', latest_prop["name"])
 
     if key in sent_history:
         print(f"送信済みのためスキップ: {latest_prop['name']}")
@@ -478,7 +474,7 @@ def main():
 
     success = send_line_message(latest_prop, page_url, station_text, feature_text)
     if success:
-        save_sent_history(spreadsheet, latest_prop["name"], latest_prop["date"], latest_prop["url"])
+        save_sent_history(spreadsheet, latest_prop["name"], latest_prop["date"])
         print(f"  → LINE送信完了！")
         print(f"  → 物件ページURL: {page_url}")
         print(f"\n✅ 完了！新物件をLINEで送信しました。")
