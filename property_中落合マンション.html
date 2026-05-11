@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>『中落合マンション』 | クローバー不動産</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Shippori+Mincho:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green: #2d6a4f;
+      --green-light: #40916c;
+      --green-pale: #d8f3dc;
+      --gold: #b5883a;
+      --white: #ffffff;
+      --gray-bg: #f7f9f7;
+      --gray-text: #555;
+      --border: #d0e4d6;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Noto Sans JP', sans-serif; background: var(--gray-bg); color: #333; }
+    header { background: var(--green); padding: 16px 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    .logo { font-family: 'Shippori Mincho', serif; color: var(--white); font-size: 20px; letter-spacing: 0.1em; text-align: center; }
+    .logo span { color: #a8d5b5; font-size: 13px; display: block; letter-spacing: 0.2em; }
+    .hero { background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%); padding: 32px 24px; text-align: center; }
+    .hero-badge { display: inline-block; background: var(--gold); color: white; font-size: 12px; font-weight: 700; letter-spacing: 0.15em; padding: 4px 14px; border-radius: 20px; margin-bottom: 12px; }
+    .hero h1 { font-family: 'Shippori Mincho', serif; color: white; font-size: 24px; font-weight: 700; line-height: 1.4; }
+    .container { max-width: 680px; margin: 0 auto; padding: 24px 16px 48px; }
+    .property-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 16px rgba(45,106,79,0.1); margin-bottom: 24px; }
+    .property-image { width: 100%; height: 240px; object-fit: cover; display: block; }
+    .property-image-placeholder { width: 100%; height: 240px; background: var(--green-pale); display: flex; align-items: center; justify-content: center; font-size: 40px; }
+    .property-body { padding: 20px; }
+    .property-name { font-family: 'Shippori Mincho', serif; font-size: 22px; font-weight: 700; color: var(--green); margin-bottom: 16px; line-height: 1.4; }
+    .station-info { display: flex; align-items: flex-start; gap: 10px; background: var(--green-pale); border-radius: 8px; padding: 12px 14px; margin-bottom: 14px; }
+    .station-icon { font-size: 18px; flex-shrink: 0; }
+    .station-text { font-size: 13px; color: var(--green); line-height: 1.6; font-weight: 500; }
+    .description-block { margin-bottom: 16px; }
+    .desc-line { font-size: 13px; color: var(--gray-text); line-height: 1.9; padding: 2px 0; }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+    .original-link { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--green-light); text-decoration: none; }
+    .original-link:hover { text-decoration: underline; }
+    .details-section { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 16px rgba(45,106,79,0.1); margin-bottom: 24px; }
+    .section-title { font-family: 'Shippori Mincho', serif; font-size: 18px; color: var(--green); font-weight: 700; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--green-pale); }
+    .details-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .details-table th { background: var(--green-pale); color: var(--green); font-weight: 700; padding: 10px 12px; text-align: left; width: 35%; vertical-align: top; border-bottom: 1px solid var(--border); }
+    .details-table td { padding: 10px 12px; color: #333; border-bottom: 1px solid var(--border); line-height: 1.7; vertical-align: top; }
+    .cta-section { background: white; border-radius: 12px; padding: 24px 20px; box-shadow: 0 2px 16px rgba(45,106,79,0.1); text-align: center; margin-bottom: 24px; }
+    .cta-title { font-family: 'Shippori Mincho', serif; font-size: 18px; color: var(--green); font-weight: 700; margin-bottom: 8px; }
+    .cta-sub { font-size: 12px; color: var(--gray-text); margin-bottom: 20px; line-height: 1.6; }
+    .btn-apply { display: block; width: 100%; background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%); color: white; font-size: 16px; font-weight: 700; padding: 16px; border-radius: 50px; text-decoration: none; letter-spacing: 0.1em; box-shadow: 0 4px 14px rgba(45,106,79,0.35); }
+    footer { background: var(--green); color: rgba(255,255,255,0.7); text-align: center; padding: 20px; font-size: 12px; }
+    footer strong { color: white; display: block; font-size: 14px; margin-bottom: 4px; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo">株式会社クローバー<span>CLOVER ESTATE</span></div>
+</header>
+<div class="hero">
+  <div class="hero-badge">🏠 新着物件のお知らせ</div>
+  <h1>『中落合マンション』</h1>
+</div>
+<div class="container">
+  <div class="property-card">
+    <img class="property-image" src="https://cdn.img-asp.jp/bkn/103799832_1_652_555_3.jpg?t=01778328643" alt="『中落合マンション』" onerror="this.style.display='none'">
+    <div class="property-body">
+      <h2 class="property-name">『中落合マンション』</h2>
+      
+      <div class="description-block"><p class="desc-line">『中落合マンション』</p>
+</div>
+      <hr class="divider">
+      <a class="original-link" href="https://www.clover-estate.co.jp/bkndetail/%E4%B8%AD%E8%90%BD%E5%90%88%E3%83%9E%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%B3/cl103799832.html" target="_blank">🔗 クローバー公式サイトで詳細を見る</a>
+    </div>
+  </div>
+  
+  <div class="details-section">
+    <h3 class="section-title">📋 物件概要</h3>
+    <table class="details-table">
+      <tbody>
+            <tr>
+              <th>所在地</th>
+              <td>東京都 新宿区 中落合 ３丁目25-18</td>
+            </tr>
+            <tr>
+              <th>交通</th>
+              <td>都営大江戸線「落合南長崎」駅 徒歩5分<br>西武池袋線「椎名町」駅 徒歩14分<br>東西線「落合」駅 徒歩22分</td>
+            </tr>
+            <tr>
+              <th>間取り/詳細</th>
+              <td>2DK</td>
+            </tr>
+            <tr>
+              <th>専有面積/バルコニー面積</th>
+              <td>46.08㎡/4.28㎡</td>
+            </tr>
+            <tr>
+              <th>価格</th>
+              <td>4,298万円</td>
+            </tr>
+            <tr>
+              <th>管理費</th>
+              <td>14,210円</td>
+            </tr>
+            <tr>
+              <th>修繕積立金</th>
+              <td>15,630円</td>
+            </tr>
+            <tr>
+              <th>土地の敷金/保証金</th>
+              <td>-/-</td>
+            </tr>
+            <tr>
+              <th>土地権利</th>
+              <td>所有権</td>
+            </tr>
+            <tr>
+              <th>種別/構造</th>
+              <td>中古マンション/鉄骨鉄筋コンクリート</td>
+            </tr>
+            <tr>
+              <th>築年月（築年数）</th>
+              <td>1969年 12月        (築56年)</td>
+            </tr>
+            <tr>
+              <th>所在階/階建</th>
+              <td>7階/9階建</td>
+            </tr>
+            <tr>
+              <th>管理組合有無</th>
+              <td>有</td>
+            </tr>
+            <tr>
+              <th>管理員の勤務形態</th>
+              <td>日勤</td>
+            </tr>
+            <tr>
+              <th>取引態様</th>
+              <td>仲介</td>
+            </tr>
+            <tr>
+              <th>引渡し</th>
+              <td>相談</td>
+            </tr>
+            <tr>
+              <th>リフォーム</th>
+              <td>2026年7月 キッチン 浴室 トイレ 壁 床 全室</td>
+            </tr>
+            <tr>
+              <th>リノベーション</th>
+              <td>2026年7月 キッチン・浴室・トイレ・壁・床・全室</td>
+            </tr>
+            <tr>
+              <th>設備条件</th>
+              <td>リノベーション済　エレベーター　駐輪場　バイク置場あり　システムキッチン　浴室乾燥機　オートロック</td>
+            </tr>
+            <tr>
+              <th>備考</th>
+              <td>◆お問い合わせ当日内覧可能◆ ■住宅ローン支払例■【月々返済額　11万3287円】頭金0円　ボーナス返済額0円　借入額4298万円　金利0.59％（変動金利）　35年返済の場合　●住宅ローン、諸費用ローンお気軽にご相談下さい！</td>
+            </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="cta-section">
+    <p class="cta-title">この物件が気になる方へ</p>
+    <p class="cta-sub">下のボタンからお気軽にお問い合わせください。<br>専門スタッフが丁寧にご対応いたします。</p>
+    <a class="btn-apply" href="https://docs.google.com/forms/d/e/1FAIpQLSe1mfdDaB84CmATLQIHMc5-YRvF-tco7KqzvYl3W1Wxf_Sy7Q/viewform?usp=pp_url&entry.195312494=%E3%80%8E%E4%B8%AD%E8%90%BD%E5%90%88%E3%83%9E%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%B3%E3%80%8F" target="_blank">📩 この物件に問い合わせる</a>
+  </div>
+</div>
+<footer>
+  <strong>株式会社クローバー</strong>
+  東京都渋谷区神宮前４丁目１１-６　TEL: 03-6721-0818<br>
+  営業時間：9:00〜22:00　定休日：水曜日
+</footer>
+</body>
+</html>
