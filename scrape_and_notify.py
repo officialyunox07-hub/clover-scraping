@@ -74,6 +74,10 @@ def scrape_latest_properties():
         if not property_name:
             continue
 
+        # 物件名として不適切なものを除外（短すぎる、URLっぽいものなど）
+        if len(property_name) < 3:
+            continue
+
         # 日付を探す（リンクの近くのテキストから）
         date = ""
         # 親要素のテキストから日付パターンを探す
@@ -101,6 +105,9 @@ def scrape_latest_properties():
             "image_url": image_url,
             "description": description
         })
+
+    # 日付で降順ソートして最新物件を優先
+    properties.sort(key=lambda x: x["date"], reverse=True)
 
     return properties
 
