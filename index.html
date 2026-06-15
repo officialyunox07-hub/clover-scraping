@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>紹介物件一覧 | 理想のおうち案内所</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Shippori+Mincho:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green: #2d6a4f;
+      --green-light: #40916c;
+      --green-pale: #d8f3dc;
+      --gold: #b5883a;
+      --white: #ffffff;
+      --gray-bg: #f7f9f7;
+      --border: #d0e4d6;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Noto Sans JP', sans-serif; background: var(--gray-bg); color: #333; }
+    header { background: var(--green); padding: 16px 24px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    .logo { font-family: 'Shippori Mincho', serif; color: white; font-size: 20px; letter-spacing: 0.1em; }
+    .logo span { color: #a8d5b5; font-size: 13px; display: block; letter-spacing: 0.2em; }
+    .hero { background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%); padding: 28px 24px; text-align: center; }
+    .hero h1 { font-family: 'Shippori Mincho', serif; color: white; font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .hero p { color: rgba(255,255,255,0.8); font-size: 13px; }
+    .container { max-width: 680px; margin: 0 auto; padding: 24px 16px 48px; }
+    .count { font-size: 13px; color: #666; margin-bottom: 16px; }
+    .card { display: block; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 16px rgba(45,106,79,0.1); margin-bottom: 16px; text-decoration: none; color: inherit; transition: transform 0.15s, box-shadow 0.15s; }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(45,106,79,0.18); }
+    .card-img img { width: 100%; height: 180px; object-fit: cover; display: block; }
+    .no-img { width: 100%; height: 180px; background: var(--green-pale); display: flex; align-items: center; justify-content: center; font-size: 40px; }
+    .card-body { padding: 16px; }
+    .card-title { font-family: 'Shippori Mincho', serif; font-size: 18px; font-weight: 700; color: var(--green); margin-bottom: 8px; line-height: 1.4; }
+    .card-station { font-size: 12px; color: #555; margin-bottom: 8px; }
+    .card-meta { display: flex; gap: 10px; align-items: center; }
+    .price { font-size: 15px; font-weight: 700; color: var(--gold); }
+    .madori { font-size: 13px; color: #666; background: var(--green-pale); padding: 2px 8px; border-radius: 4px; }
+    footer { background: var(--green); color: rgba(255,255,255,0.7); text-align: center; padding: 20px; font-size: 12px; }
+    footer strong { color: white; display: block; font-size: 14px; margin-bottom: 4px; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo">理想のおうち案内所<span>CLOVER ESTATE</span></div>
+</header>
+<div class="hero">
+  <h1>🏠 紹介物件一覧</h1>
+  <p>公式LINEで紹介した物件をまとめています</p>
+</div>
+<div class="container">
+  <p class="count">全22件</p>
+  
+    <a class="card" href="https://officialyunox07-hub.github.io/clover-scraping/property_飯田橋第一パークファミリア.html">
+      <div class="card-img"><img src="https://cdn.img-asp.jp/bkn/104567034_1_652_555_3.jpg?t=01780305068" alt="『飯田橋第一パークファミリア』" onerror="this.style.display='none'"></div>
+      <div class="card-body">
+        <h2 class="card-title">『飯田橋第一パークファミリア』</h2>
+        
+        <div class="card-meta">
+          <span class='price'>6,480万円</span>
+          <span class='madori'>3LDK</span>
+        </div>
+      </div>
+    </a>
+    <a class="card" href="https://officialyunox07-hub.github.io/clover-scraping/property_若木住宅2号棟.html">
+      <div class="card-img"><img src="https://cdn.img-asp.jp/bkn/103590289_1_652_555_3.jpg?t=01778328296" alt="『若木住宅2号棟』" onerror="this.style.display='none'"></div>
+      <div class="card-body">
+        <h2 class="card-title">『若木住宅2号棟』</h2>
+        
+        <div class="card-meta">
+          <span class='price'>1,680万円</span>
+          <span class='madori'>2LDK</span>
+        </div>
+      </div>
+    </a>
+    <a class="card" href="https://officialyunox07-hub.github.io/clover-scraping/property_秀和大岡山レジデンス.html">
+      <div class="card-img"><img src="https://cdn.img-asp.jp/bkn/104785079_1_652_555_3.jpg?t=01780969663" alt="『秀和大岡山レジデンス』" onerror="this.style.display='none'"></div>
+      <div class="card-body">
+        <h2 class="card-title">『秀和大岡山レジデンス』</h2>
+        
+        <div class="card-meta">
+          <span class='price'>5,499万円</span>
+          <span class='madori'>2LDK</span>
+        </div>
+      </div>
+    </a>
+    <a class="card" href="https://officialyunox07-hub.github.io/clover-scraping/property_渋谷マンション.html">
+      <div class="card-img"><img src="https://cdn.img-asp.jp/bkn/104913113_1_652_555_3.jpg?t=01781400899" alt="『渋谷マンション』" onerror="this.style.display='none'"></div>
+      <div class="card-body">
+        <h2 class="card-title">『渋谷マンション』</h2>
+        
+        <div class="card-meta">
+          <span class='price'>7,999万円</span>
+          <span class='madori'>2LDK</span>
+        </div>
+      </div>
+    </a>
+    <a class="card" href="https://officialyunox07-hub.github.io/clover-scraping/property_東武ハイライン第2芝虎ノ門.html">
+      <div class="card-img"><img src="https://cdn.img-asp.jp/bkn/103208519_1_652_555_3.jpg?t=01775976170" alt="『東武ハイライン第2芝虎ノ門』" onerror="this.style.display='none'"></div>
+      <div class="card-body">
+        <h2 class="card-title">『東武ハイライン第2芝虎ノ門』</h2>
+        <p class='card-station'>🚉 日比谷線「神楽坂」駅徒歩4分、都営三田線「御成門」駅徒歩5分</p>
+        <div class="card-meta">
+          <span class='price'>7,499万円</span>
+          <span class='madori'>2LDK</span>
+        </div>
+      </div>
+    </a>
+    <a class="card" href="https://officialyunox07-hub.github.io/clover-scraping/property_朝日プラザ上北沢.html">
+      <div class="card-img"><img src="https://cdn.img-asp.jp/bkn/103446740_1_652_555_3.jpg?t=01776674628" alt="『朝日プラザ上北沢』" onerror="this.style.display='none'"></div>
+      <div class="card-body">
+        <h2 class="card-title">『朝日プラザ上北沢』</h2>
+        <p class='card-station'>🚉 京王線「八幡山」駅徒歩6分「芦花公園」駅徒歩10分</p>
+        <div class="card-meta">
+          <span class='price'>5,498万円</span>
+          <span class='madori'>3LDK</span>
+        </div>
+      </div>
+    </a>
+    <a class="card" href="https://officialyunox07-hub.github.io/clover-scraping/property_日本橋グリーンハイツ.html">
+      <div class="card-img"><img src="https://cdn.img-asp.jp/bkn/103377913_1_652_555_3.jpg?t=01776486769" alt="『日本橋グリーンハイツ』" onerror="this.style.display='none'"></div>
+      <div class="card-body">
+        <h2 class="card-title">『日本橋グリーンハイツ』</h2>
+        <p class='card-station'>🚉 半蔵門線「水天宮前」駅徒歩7分、都営新宿線「浜町」駅徒歩10分</p>
+        <div class="card-meta">
+          <span class='price'>4,280万円</span>
+          <span class='madori'>1LDK</span>
+        </div>
+      </div>
+    </a>
+    <a class="card" href="https://officialyunox07-hub.github.io/clover-scraping/property_戸山マンション.html">
+      <div class="card-img"><img src="https://cdn.img-asp.jp/bkn/104411435_1_652_555_3.jpg?t=01779961699" alt="『戸山マンション』" onerror="this.style.display='none'"></div>
+      <div class="card-body">
+        <h2 class="card-title">『戸山マンション』</h2>
+        
+        <div class="card-meta">
+          <span class='price'>5,880万円</span>
+          <span class='madori'>2LDK</span>
+        </div>
+      </div>
+    </a>
+    <a class="card" href="https://officialyunox07-hub.github.io/clover-scraping/property_南雪ヶ谷ハイデンス.html">
+      <div class="card-img"><img src="https://cdn.img-asp.jp/bkn/102887956_1_652_555_3.jpg?t=01775476779" alt="『南雪ヶ谷ハイデンス』" onerror="this.style.display='none'"></div>
+      <div class="card-body">
+        <h2 class="card-title">『南雪ヶ谷ハイデンス』</h2>
+        <p class='card-station'>🚉 池上線「雪が谷大塚」駅徒歩10分の閑静な住宅街に立地</p>
+        <div class="card-meta">
+          <span class='price'>5,780万円</span>
+          <span class='madori'>3LDK</span>
+        </div>
+      </div>
+    </a>
+    <a class="card" href="https://officialyunox07-hub.github.io/clover-scraping/property_北参道ダイヤモンドパレス.html">
+      <div class="card-img"><img src="https://cdn.img-asp.jp/bkn/103292355_1_652_555_3.jpg?t=01776153806" alt="『北参道ダイヤモンドパレス』" onerror="this.style.display='none'"></div>
+      <div class="card-body">
+        <h2 class="card-title">『北参道ダイヤモンドパレス』</h2>
+        <p class='card-station'>🚉 副都心線「北参道」駅徒歩4分</p>
+        <div class="card-meta">
+          <span class='price'>7,999万円</span>
+          <span class='madori'>1LDK</span>
+        </div>
+      </div>
+    </a>
+    <a class="card" href="https://officialyunox07-hub.github.io/clover-scraping/property_中落合マンション.html">
+      <div class="card-img"><img src="https://cdn.img-asp.jp/bkn/103799832_1_652_555_3.jpg?t=01778328643" alt="『中落合マンション』" onerror="this.style.display='none'"></div>
+      <div class="card-body">
+        <h2 class="card-title">『中落合マンション』</h2>
+        
+        <div class="card-meta">
+          <span class='price'>4,298万円</span>
+          <span class='madori'>2DK</span>
+        </div>
+      </div>
+    </a>
+    <a class="card" href="https://officialyunox07-hub.github.io/clover-scraping/property_ルフォン杉並方南町.html">
+      <div class="card-img"><img src="https://cdn.img-asp.jp/bkn/104883795_1_652_555_3.jpg?t=01781252715" alt="『ルフォン杉並方南町』" onerror="this.style.display='none'"></div>
+      <div class="card-body">
+        <h2 class="card-title">『ルフォン杉並方南町』</h2>
+        
+        <div class="card-meta">
+          <span class='price'>9,980万円</span>
+          <span class='madori'>3LDK</span>
+        </div>
+      </div>
+    </a>
+    <a class="card" href="https://officialyunox07-hub.github.io/clover-scraping/property_ライオンズマンション上野毛第2.html">
+      <div class="card-img"><img src="https://cdn.img-asp.jp/bkn/104710623_1_652_555_3.jpg?t=01780731101" alt="『ライオンズマンション上野毛第2』" onerror="this.style.display='none'"></div>
+      <div class="card-body">
+        <h2 class="card-title">『ライオンズマンション上野毛第2』</h2>
+        
+        <div class="card-meta">
+          <span class='price'>4,999万円</span>
+          <span class='madori'>1LDK</span>
+        </div>
+      </div>
+    </a>
+    <a class="card" href="https://officialyunox07-hub.github.io/clover-scraping/property_メゾンドールニュー明石.html">
+      <div class="card-img"><img src="https://cdn.img-asp.jp/bkn/104737943_1_652_555_3.jpg?t=01780823255" alt="『メゾンドールニュー明石』" onerror="this.style.display='none'"></div>
+      <div class="card-body">
+        <h2 class="card-title">『メゾンドールニュー明石』</h2>
+        
+        <div class="card-meta">
+          <span class='price'>4,880万円</span>
+          <span class='madori'>1LDK</span>
+        </div>
+      </div>
+    </a>
+    <a class="card" href="https://officialyunox07-hub.github.io/clover-scraping/property_プレール東武練馬.html">
+      <div class="card-img"><img src="https://cdn.img-asp.jp/bkn/103230340_1_652_555_3.jpg?t=01776046357" alt="『プレール東武練馬』" onerror="this.style.display='none'"></div>
+      <div class="card-body">
+        <h2 class="card-title">『プレール東武練馬』</h2>
+        <p class='card-station'>🚉 東武東上線「東武練馬」駅徒歩8分</p>
+        <div class="card-meta">
+          <span class='price'>3,180万円</span>
+          <span class='madori'>2LDK</span>
+        </div>
+      </div>
+    </a>
+    <a class="card" href="https://officialyunox07-hub.github.io/clover-scraping/property_パークハイツ高島平.html">
+      <div class="card-img"><img src="https://cdn.img-asp.jp/bkn/103400162_1_652_555_3.jpg?t=01776659472" alt="『パークハイツ高島平』" onerror="this.style.display='none'"></div>
+      <div class="card-body">
+        <h2 class="card-title">『パークハイツ高島平』</h2>
+        <p class='card-station'>🚉 都営三田線「西台」駅徒歩8分・駅前にイオンモールあり＆最寄りのスーパーまで徒歩3分</p>
+        <div class="card-meta">
+          <span class='price'>2,480万円</span>
+          <span class='madori'>2LDK</span>
+        </div>
+      </div>
+    </a>
+    <a class="card" href="https://officialyunox07-hub.github.io/clover-scraping/property_ノア道玄坂.html">
+      <div class="card-img"><img src="https://cdn.img-asp.jp/bkn/104856345_1_652_555_3.jpg?t=01781175212" alt="『ノア道玄坂』" onerror="this.style.display='none'"></div>
+      <div class="card-body">
+        <h2 class="card-title">『ノア道玄坂』</h2>
+        
+        <div class="card-meta">
+          <span class='price'>3,580万円</span>
+          <span class='madori'>1R</span>
+        </div>
+      </div>
+    </a>
+    <a class="card" href="https://officialyunox07-hub.github.io/clover-scraping/property_ドルメン五反田.html">
+      <div class="card-img"><img src="https://cdn.img-asp.jp/bkn/104359441_1_652_555_3.jpg?t=01779781535" alt="『ドルメン五反田』" onerror="this.style.display='none'"></div>
+      <div class="card-body">
+        <h2 class="card-title">『ドルメン五反田』</h2>
+        
+        <div class="card-meta">
+          <span class='price'>4,499万円</span>
+          <span class='madori'>2DK</span>
+        </div>
+      </div>
+    </a>
+    <a class="card" href="https://officialyunox07-hub.github.io/clover-scraping/property_セザール錦糸町.html">
+      <div class="card-img"><img src="https://cdn.img-asp.jp/bkn/103811548_1_652_555_3.jpg?t=01778389657" alt="『セザール錦糸町』" onerror="this.style.display='none'"></div>
+      <div class="card-body">
+        <h2 class="card-title">『セザール錦糸町』</h2>
+        
+        <div class="card-meta">
+          <span class='price'>6,380万円</span>
+          <span class='madori'>3LDK</span>
+        </div>
+      </div>
+    </a>
+    <a class="card" href="https://officialyunox07-hub.github.io/clover-scraping/property_グレイス浜田山.html">
+      <div class="card-img"><img src="https://cdn.img-asp.jp/bkn/103327522_1_652_555_3.jpg?t=01776332359" alt="『グレイス浜田山』" onerror="this.style.display='none'"></div>
+      <div class="card-body">
+        <h2 class="card-title">『グレイス浜田山』</h2>
+        <p class='card-station'>🚉 京王井の頭線「浜田山」駅徒歩2分</p>
+        <div class="card-meta">
+          <span class='price'>2,180万円</span>
+          <span class='madori'>1DK</span>
+        </div>
+      </div>
+    </a>
+    <a class="card" href="https://officialyunox07-hub.github.io/clover-scraping/property_グランドメゾン本郷.html">
+      <div class="card-img"><img src="https://cdn.img-asp.jp/bkn/104336906_1_652_555_3.jpg?t=01779706215" alt="『グランドメゾン本郷』" onerror="this.style.display='none'"></div>
+      <div class="card-body">
+        <h2 class="card-title">『グランドメゾン本郷』</h2>
+        
+        <div class="card-meta">
+          <span class='price'>4,680万円</span>
+          <span class='madori'>1LDK</span>
+        </div>
+      </div>
+    </a>
+    <a class="card" href="https://officialyunox07-hub.github.io/clover-scraping/property_いづみハイツ本蓮沼.html">
+      <div class="card-img"><img src="https://cdn.img-asp.jp/bkn/104490441_1_652_555_3.jpg?t=01780128497" alt="『いづみハイツ本蓮沼』" onerror="this.style.display='none'"></div>
+      <div class="card-body">
+        <h2 class="card-title">『いづみハイツ本蓮沼』</h2>
+        
+        <div class="card-meta">
+          <span class='price'>5,999万円</span>
+          <span class='madori'>3LDK</span>
+        </div>
+      </div>
+    </a>
+</div>
+<footer>
+  <strong>株式会社クローバー</strong>
+  東京都渋谷区神宮前４丁目１１-６　TEL: 03-6721-0818<br>
+  営業時間：9:00〜22:00　定休日：水曜日
+</footer>
+</body>
+</html>
