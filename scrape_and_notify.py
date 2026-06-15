@@ -19,6 +19,7 @@ GOOGLE_CREDENTIALS_JSON = os.environ["GOOGLE_CREDENTIALS"]
 URL = "https://www.clover-estate.co.jp/"
 NETLIFY_BASE_URL = "https://officialyunox07-hub.github.io/clover-scraping"
 GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSe1mfdDaB84CmATLQIHMc5-YRvF-tco7KqzvYl3W1Wxf_Sy7Q/viewform?usp=pp_url&entry.195312494="
+TEST_MODE = True  # テスト時はTrue、本番時はFalse
 
 # ----------------------------------------
 # 1. サイトから最新物件を取得
@@ -614,6 +615,10 @@ def main():
 
     commit_html_to_github(filename, html_content)
 
+    if TEST_MODE:
+    print("  → テストモード：LINE送信スキップ")
+    success = True
+else:
     success = send_line_message(latest_prop, page_url, station_text, feature_text)
     if success:
         save_sent_history(spreadsheet, latest_prop["name"], latest_prop["date"])
