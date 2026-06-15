@@ -386,13 +386,16 @@ def generate_property_html(prop, station_text, feature_text, details, full_descr
 # ----------------------------------------
 def commit_html_to_github(filename, html_content):
     try:
-        filepath = filename
-        with open(filepath, "w", encoding="utf-8") as f:
+        # 物件ページを保存
+        with open(filename, "w", encoding="utf-8") as f:
             f.write(html_content)
+
+        # 物件一覧ページを生成
+        generate_index_html()
 
         subprocess.run(["git", "config", "user.email", "action@github.com"], check=True)
         subprocess.run(["git", "config", "user.name", "GitHub Actions"], check=True)
-        subprocess.run(["git", "add", filepath], check=True)
+        subprocess.run(["git", "add", filename, "index.html"], check=True)
         subprocess.run(["git", "commit", "-m", f"Add property page: {filename}"], check=True)
         subprocess.run(["git", "push"], check=True)
         print(f"  → GitHubにHTMLをコミット完了: {filename}")
@@ -400,6 +403,114 @@ def commit_html_to_github(filename, html_content):
     except subprocess.CalledProcessError as e:
         print(f"  → GitHubコミット失敗: {e}")
         return False
+
+# ----------------------------------------
+# 7. 物件一覧ページ（index.html）を生成
+# ----------------------------------------
+def generate_index_html():
+    import glob
+    property_files = sorted(glob.glob("property_*.html"), reverse=True)
+
+    cards_html = ""
+    for filepath in property_files:
+        with open(filepath, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        title_match = re.search(r'<title>(.*?)\s*\|', content)
+        title = title_match.group(1) if title_match else filepath
+
+        img_match = re.search(r'<img class="property-image" src="([^"]+)"', content)
+        img_url = img_match.group(1) if img_match else ""
+
+        station_match = re.search(r'<span class="station-text">([^<]+)</span>', content)
+        station = station_match.group(1) if station_match else ""
+
+        price_match = re.search(r'<th>価格</th>\s*<td>([^<]+)</td>', content)
+        price = price_match.group(1).strip() if price_match else ""
+
+        madori_match = re.search(r'<th>間取り/詳細</th>\s*<td>([^<]+)</td>', content)
+        madori = madori_match.group(1).strip() if madori_match else ""
+
+        page_url = f"{NETLIFY_BASE_URL}/{filepath}"
+        img_tag = f'<img src="{img_url}" alt="{title}" onerror="this.style.display=\'none\'">' if img_url else '<div class="no-img">🏢</div>'
+
+        cards_html += f'''
+    <a class="card" href="{page_url}">
+      <div class="card-img">{img_tag}</div>
+      <div class="card-body">
+        <h2 class="card-title">{title}</h2>
+        {"<p class='card-station'>🚉 " + station + "</p>" if station else ""}
+        <div class="card-meta">
+          {"<span class='price'>" + price + "</span>" if price else ""}
+          {"<span class='madori'>" + madori + "</span>" if madori else ""}
+        </div>
+      </div>
+    </a>'''
+
+    html = f'''<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>紹介物件一覧 | 理想のおうち案内所</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Shippori+Mincho:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {{
+      --green: #2d6a4f;
+      --green-light: #40916c;
+      --green-pale: #d8f3dc;
+      --gold: #b5883a;
+      --white: #ffffff;
+      --gray-bg: #f7f9f7;
+      --border: #d0e4d6;
+    }}
+    * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+    body {{ font-family: 'Noto Sans JP', sans-serif; background: var(--gray-bg); color: #333; }}
+    header {{ background: var(--green); padding: 16px 24px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }}
+    .logo {{ font-family: 'Shippori Mincho', serif; color: white; font-size: 20px; letter-spacing: 0.1em; }}
+    .logo span {{ color: #a8d5b5; font-size: 13px; display: block; letter-spacing: 0.2em; }}
+    .hero {{ background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%); padding: 28px 24px; text-align: center; }}
+    .hero h1 {{ font-family: 'Shippori Mincho', serif; color: white; font-size: 22px; font-weight: 700; margin-bottom: 6px; }}
+    .hero p {{ color: rgba(255,255,255,0.8); font-size: 13px; }}
+    .container {{ max-width: 680px; margin: 0 auto; padding: 24px 16px 48px; }}
+    .count {{ font-size: 13px; color: #666; margin-bottom: 16px; }}
+    .card {{ display: block; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 16px rgba(45,106,79,0.1); margin-bottom: 16px; text-decoration: none; color: inherit; transition: transform 0.15s, box-shadow 0.15s; }}
+    .card:hover {{ transform: translateY(-2px); box-shadow: 0 4px 20px rgba(45,106,79,0.18); }}
+    .card-img img {{ width: 100%; height: 180px; object-fit: cover; display: block; }}
+    .no-img {{ width: 100%; height: 180px; background: var(--green-pale); display: flex; align-items: center; justify-content: center; font-size: 40px; }}
+    .card-body {{ padding: 16px; }}
+    .card-title {{ font-family: 'Shippori Mincho', serif; font-size: 18px; font-weight: 700; color: var(--green); margin-bottom: 8px; line-height: 1.4; }}
+    .card-station {{ font-size: 12px; color: #555; margin-bottom: 8px; }}
+    .card-meta {{ display: flex; gap: 10px; align-items: center; }}
+    .price {{ font-size: 15px; font-weight: 700; color: var(--gold); }}
+    .madori {{ font-size: 13px; color: #666; background: var(--green-pale); padding: 2px 8px; border-radius: 4px; }}
+    footer {{ background: var(--green); color: rgba(255,255,255,0.7); text-align: center; padding: 20px; font-size: 12px; }}
+    footer strong {{ color: white; display: block; font-size: 14px; margin-bottom: 4px; }}
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo">理想のおうち案内所<span>CLOVER ESTATE</span></div>
+</header>
+<div class="hero">
+  <h1>🏠 紹介物件一覧</h1>
+  <p>公式LINEで紹介した物件をまとめています</p>
+</div>
+<div class="container">
+  <p class="count">全{len(property_files)}件</p>
+  {cards_html}
+</div>
+<footer>
+  <strong>株式会社クローバー</strong>
+  東京都渋谷区神宮前４丁目１１-６　TEL: 03-6721-0818<br>
+  営業時間：9:00〜22:00　定休日：水曜日
+</footer>
+</body>
+</html>'''
+
+    with open("index.html", "w", encoding="utf-8") as f:
+        f.write(html)
+    print("  → index.html更新完了")
 
 # ----------------------------------------
 # 7. LINEにメッセージを送信
