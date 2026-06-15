@@ -409,15 +409,18 @@ def commit_html_to_github(filename, html_content):
 # ----------------------------------------
 def generate_index_html():
     import glob
-# 日付を取得して新しい順にソート
-all_files = glob.glob("property_*.html")
-def get_date(filepath):
-    with open(filepath, "r", encoding="utf-8") as f:
-        content = f.read()
-    date_match = re.search(r'(\d{4}/\d{2}/\d{2})', content)
-    return date_match.group(1) if date_match else "0000/00/00"
 
-property_files = sorted(all_files, key=get_date, reverse=True)
+    def get_date(filepath):
+        try:
+            with open(filepath, "r", encoding="utf-8") as f:
+                content = f.read()
+            date_match = re.search(r'(\d{4}/\d{2}/\d{2})', content)
+            return date_match.group(1) if date_match else "0000/00/00"
+        except:
+            return "0000/00/00"
+
+    all_files = glob.glob("property_*.html")
+    property_files = sorted(all_files, key=get_date, reverse=True)
 
     cards_html = ""
     for filepath in property_files:
