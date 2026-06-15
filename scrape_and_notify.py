@@ -616,13 +616,13 @@ def main():
     commit_html_to_github(filename, html_content)
 
     if TEST_MODE:
-    print("  → テストモード：LINE送信スキップ")
-    success = True
-else:
-    success = send_line_message(latest_prop, page_url, station_text, feature_text)
+        print("  → テストモード：LINE送信スキップ")
+        success = True
+    else:
+        success = send_line_message(latest_prop, page_url, station_text, feature_text)
+
     if success:
         save_sent_history(spreadsheet, latest_prop["name"], latest_prop["date"])
-        print(f"  → LINE送信完了！")
         print(f"  → 物件ページURL: {page_url}")
         print(f"\n✅ 完了！新物件をLINEで送信しました。")
     else:
