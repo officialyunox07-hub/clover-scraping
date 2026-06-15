@@ -410,17 +410,37 @@ def commit_html_to_github(filename, html_content):
 def generate_index_html():
     import glob
 
-    def get_date(filepath):
-        try:
-            with open(filepath, "r", encoding="utf-8") as f:
-                content = f.read()
-            date_match = re.search(r'(\d{4}/\d{2}/\d{2})', content)
-            return date_match.group(1) if date_match else "0000/00/00"
-        except:
-            return "0000/00/00"
+    # 送信履歴から順番を取得
+    try:
+        creds_dict = json.loads(GOOGLE_CREDENTIALS_JSON)
+        scopes = [
+            "https://www.googleapis.com/auth/spreadsheets",
+            "https://www.googleapis.com/auth/drive"
+        ]
+        creds = Credentials.from_service_account_info(creds_dict, scopes=scopes)
+        client = gspread.authorize(creds)
+        spreadsheet = client.open("clover-スクレイピング")
+        sheet = spreadsheet.worksheet("送信履歴")
+        records = sheet.get_all_records()
+        # 物件名→送信日時の辞書を作成（『』除去して照合）
+        history_order = {}
+        for i, r in enumerate(records):
+            clean_name = re.sub(r'[『』]', '', str(r['物件名']))
+            history_order[clean_name] = r.get('送信日時', '') or f"0000/00/00 {i:02d}:00"
+    except Exception as e:
+        print(f"  送信履歴取得エラー: {e}")
+        history_order = {}
 
     all_files = glob.glob("property_*.html")
-    property_files = sorted(all_files, key=get_date, reverse=True)
+
+    def get_sent_datetime(filepath):
+        with open(filepath, "r", encoding="utf-8") as f:
+            content = f.read()
+        title_match = re.search(r'<title>(.*?)\s*\|', content)
+        title = re.sub(r'[『』]', '', title_match.group(1)) if title_match else ""
+        return history_order.get(title, "0000/00/00 00:00")
+
+    property_files = sorted(all_files, key=get_sent_datetime, reverse=True)
 
     cards_html = ""
     for filepath in property_files:
