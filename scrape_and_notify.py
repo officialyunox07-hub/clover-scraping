@@ -391,12 +391,9 @@ def commit_html_to_github(filename, html_content):
         with open(filename, "w", encoding="utf-8") as f:
             f.write(html_content)
 
-        # 物件一覧ページを生成
-        generate_index_html()
-
         subprocess.run(["git", "config", "user.email", "action@github.com"], check=True)
         subprocess.run(["git", "config", "user.name", "GitHub Actions"], check=True)
-        subprocess.run(["git", "add", filename, "index.html"], check=True)
+        subprocess.run(["git", "add", filename], check=True)
         subprocess.run(["git", "commit", "-m", f"Add property page: {filename}"], check=True)
         subprocess.run(["git", "push"], check=True)
         print(f"  → GitHubにHTMLをコミット完了: {filename}")
@@ -623,6 +620,15 @@ def main():
 
     if success:
         save_sent_history(spreadsheet, latest_prop["name"], latest_prop["date"])
+        # 送信履歴保存後にindex.htmlを更新して正しい順番にする
+        generate_index_html()
+        subprocess.run(["git", "config", "user.email", "action@github.com"], check=True)
+        subprocess.run(["git", "config", "user.name", "GitHub Actions"], check=True)
+        subprocess.run(["git", "add", "index.html"], check=True)
+        result = subprocess.run(["git", "diff", "--cached", "--quiet"])
+        if result.returncode != 0:
+            subprocess.run(["git", "commit", "-m", "Update index.html order"], check=True)
+            subprocess.run(["git", "push"], check=True)
         print(f"  → 物件ページURL: {page_url}")
         print(f"\n✅ 完了！新物件をLINEで送信しました。")
     else:
