@@ -19,7 +19,7 @@ GOOGLE_CREDENTIALS_JSON = os.environ["GOOGLE_CREDENTIALS"]
 URL = "https://www.clover-estate.co.jp/"
 NETLIFY_BASE_URL = "https://officialyunox07-hub.github.io/clover-scraping"
 GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSe1mfdDaB84CmATLQIHMc5-YRvF-tco7KqzvYl3W1Wxf_Sy7Q/viewform?usp=pp_url&entry.195312494="
-TEST_MODE = True  # テスト時はTrue、本番時はFalse
+TEST_MODE = False  # テスト時はTrue、本番時はFalse
 
 # ----------------------------------------
 # 1. サイトから最新物件を取得
