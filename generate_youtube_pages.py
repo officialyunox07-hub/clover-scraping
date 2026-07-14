@@ -188,7 +188,7 @@ def generate_youtube_index_html(properties):
     .card {{ display: block; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 16px rgba(45,106,79,0.1); margin-bottom: 16px; text-decoration: none; color: inherit; transition: transform 0.15s, box-shadow 0.15s; }}
     .card:hover {{ transform: translateY(-2px); box-shadow: 0 4px 20px rgba(45,106,79,0.18); }}
     .card-img {{ position: relative; }}
-    .card-img img {{ width: 100%; height: 200px; object-fit: cover; display: block; }}
+    .card-img img {{ width: 100%; height: 200px; object-fit: contain; background: #000; display: block; }}
     .play-overlay {{ position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 48px; height: 48px; background: rgba(255,0,0,0.85); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; padding-left: 4px; }}
     .card-body {{ padding: 16px; }}
     .card-title {{ font-family: 'Shippori Mincho', serif; font-size: 18px; font-weight: 700; color: var(--green); margin-bottom: 6px; line-height: 1.4; }}
@@ -279,8 +279,8 @@ def main():
         files_to_commit.append(filename)
         print(f"  → {filename} 生成完了")
 
-    # 一覧ページを生成
-    index_html = generate_youtube_index_html(properties)
+    # 一覧ページを生成（CSVの逆順＝新しい順）
+    index_html = generate_youtube_index_html(list(reversed(properties)))
     with open("youtube_index.html", "w", encoding="utf-8") as f:
         f.write(index_html)
     files_to_commit.append("youtube_index.html")
