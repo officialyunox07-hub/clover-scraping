@@ -72,6 +72,9 @@ def generate_youtube_property_html(property_name, video_url, video_id):
     .thumbnail img {{ width: 100%; height: 240px; object-fit: contain; background: #000; display: block; }}
     .play-btn {{ position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 64px; height: 64px; background: rgba(255,0,0,0.85); border-radius: 50%; display: flex; align-items: center; justify-content: center; }}
     .play-btn::after {{ content: ''; border-left: 24px solid white; border-top: 14px solid transparent; border-bottom: 14px solid transparent; margin-left: 4px; }}
+    .sold-out-overlay {{ width: 100%; height: 240px; background: #ccc; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 12px; border-radius: 0; }}
+    .sold-out-badge {{ background: #888; color: white; font-size: 14px; font-weight: 700; padding: 6px 16px; border-radius: 20px; letter-spacing: 0.1em; }}
+    .sold-out-msg {{ font-size: 13px; color: #666; }}
     .video-embed {{ display: none; width: 100%; aspect-ratio: 16/9; }}
     .video-embed iframe {{ width: 100%; height: 100%; border: none; }}
     .property-body {{ padding: 20px; }}
@@ -99,8 +102,12 @@ def generate_youtube_property_html(property_name, video_url, video_id):
 <div class="container">
   <div class="property-card">
     <div class="thumbnail" onclick="playVideo()" id="thumbnail">
-      <img src="{thumbnail_url}" alt="{property_name}">
-      <div class="play-btn"></div>
+      <img src="{thumbnail_url}" alt="{property_name}" onerror="showSoldOut()">
+      <div class="play-btn" id="play-btn"></div>
+    </div>
+    <div class="sold-out-overlay" id="sold-out-overlay">
+      <span class="sold-out-badge">販売終了</span>
+      <span class="sold-out-msg">現在この物件は販売終了しています</span>
     </div>
     <div class="video-embed" id="video-embed">
       <iframe id="yt-iframe" src="" allowfullscreen allow="autoplay"></iframe>
@@ -130,6 +137,10 @@ def generate_youtube_property_html(property_name, video_url, video_id):
     embed.style.display = 'block';
     document.getElementById('yt-iframe').src = 'https://www.youtube.com/embed/{video_id}?autoplay=1';
   }}
+  function showSoldOut() {{
+    document.getElementById('thumbnail').style.display = 'none';
+    document.getElementById('sold-out-overlay').style.display = 'flex';
+  }}
 </script>
 </body>
 </html>'''
@@ -150,14 +161,20 @@ def generate_youtube_index_html(properties):
         page_url = f"{NETLIFY_BASE_URL}/youtube_property_{safe_name}.html"
 
         cards_html += f'''
-    <a class="card" href="{page_url}">
+    <a class="card" href="{page_url}" id="card-{video_id}">
       <div class="card-img">
-        <img src="{thumbnail_url}" alt="{prop["name"]}" onerror="this.style.display='none'">
-        <div class="play-overlay">▶</div>
+        <img src="{thumbnail_url}" alt="{prop["name"]}" 
+             onerror="markSoldOut('{video_id}')"
+             id="thumb-{video_id}">
+        <div class="play-overlay" id="play-{video_id}">▶</div>
+        <div class="sold-out-overlay" id="overlay-{video_id}" style="display:none">
+          <span class="sold-out-badge">販売終了</span>
+          <span class="sold-out-text">現在この物件は販売終了しています</span>
+        </div>
       </div>
       <div class="card-body">
         <h2 class="card-title">{prop["name"]}</h2>
-        <p class="card-sub">動画で物件をチェック</p>
+        <p class="card-sub" id="sub-{video_id}">動画で物件をチェック</p>
       </div>
     </a>'''
 
@@ -191,6 +208,11 @@ def generate_youtube_index_html(properties):
     .card:hover {{ transform: translateY(-2px); box-shadow: 0 4px 20px rgba(45,106,79,0.18); }}
     .card-img {{ position: relative; }}
     .card-img img {{ width: 100%; height: 200px; object-fit: contain; background: #000; display: block; }}
+    .sold-out-overlay {{ width: 100%; height: 200px; background: #ccc; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }}
+    .sold-out-badge {{ background: #888; color: white; font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; letter-spacing: 0.1em; }}
+    .sold-out-text {{ font-size: 12px; color: #666; }}
+    .card.sold-out .card-title {{ color: #999; }}
+    .card.sold-out .card-sub {{ color: #bbb; }}
     .play-overlay {{ position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 48px; height: 48px; background: rgba(255,0,0,0.85); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; padding-left: 4px; }}
     .card-body {{ padding: 16px; }}
     .card-title {{ font-family: 'Shippori Mincho', serif; font-size: 18px; font-weight: 700; color: var(--green); margin-bottom: 6px; line-height: 1.4; }}
@@ -216,13 +238,24 @@ def generate_youtube_index_html(properties):
   東京都渋谷区神宮前４丁目１１-６　TEL: 03-6721-0818<br>
   営業時間：9:00〜22:00　定休日：水曜日
 </footer>
+<script>
+  function markSoldOut(videoId) {{
+    var thumb = document.getElementById('thumb-' + videoId);
+    var play = document.getElementById('play-' + videoId);
+    var overlay = document.getElementById('overlay-' + videoId);
+    var card = document.getElementById('card-' + videoId);
+    var sub = document.getElementById('sub-' + videoId);
+    if (thumb) thumb.style.display = 'none';
+    if (play) play.style.display = 'none';
+    if (overlay) overlay.style.display = 'flex';
+    if (card) card.classList.add('sold-out');
+    if (sub) sub.textContent = '販売終了';
+  }}
+</script>
 </body>
 </html>'''
 
     return html
-
-# ----------------------------------------
-# 5. GitHubにコミット
 # ----------------------------------------
 def commit_to_github(files):
     try:
