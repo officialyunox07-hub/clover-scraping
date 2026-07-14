@@ -69,7 +69,7 @@ def generate_youtube_property_html(property_name, video_url, video_id):
     .container {{ max-width: 680px; margin: 0 auto; padding: 24px 16px 48px; }}
     .property-card {{ background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 16px rgba(45,106,79,0.1); margin-bottom: 24px; }}
     .thumbnail {{ width: 100%; display: block; cursor: pointer; position: relative; }}
-    .thumbnail img {{ width: 100%; height: 240px; object-fit: cover; display: block; }}
+    .thumbnail img {{ width: 100%; height: 240px; object-fit: contain; background: #000; display: block; }}
     .play-btn {{ position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 64px; height: 64px; background: rgba(255,0,0,0.85); border-radius: 50%; display: flex; align-items: center; justify-content: center; }}
     .play-btn::after {{ content: ''; border-left: 24px solid white; border-top: 14px solid transparent; border-bottom: 14px solid transparent; margin-left: 4px; }}
     .video-embed {{ display: none; width: 100%; aspect-ratio: 16/9; }}
@@ -103,7 +103,7 @@ def generate_youtube_property_html(property_name, video_url, video_id):
       <div class="play-btn"></div>
     </div>
     <div class="video-embed" id="video-embed">
-      <iframe src="https://www.youtube.com/embed/{video_id}?autoplay=1" allowfullscreen allow="autoplay"></iframe>
+      <iframe id="yt-iframe" src="" allowfullscreen allow="autoplay"></iframe>
     </div>
     <div class="property-body">
       <h2 class="property-name">{property_name}</h2>
@@ -126,7 +126,9 @@ def generate_youtube_property_html(property_name, video_url, video_id):
 <script>
   function playVideo() {{
     document.getElementById('thumbnail').style.display = 'none';
-    document.getElementById('video-embed').style.display = 'block';
+    var embed = document.getElementById('video-embed');
+    embed.style.display = 'block';
+    document.getElementById('yt-iframe').src = 'https://www.youtube.com/embed/{video_id}?autoplay=1';
   }}
 </script>
 </body>
