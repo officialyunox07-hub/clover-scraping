@@ -101,8 +101,8 @@ def generate_youtube_property_html(property_name, video_url, video_id):
 </div>
 <div class="container">
   <div class="property-card">
-    <div class="thumbnail" onclick="playVideo()" id="thumbnail">
-      <img src="{thumbnail_url}" alt="{property_name}" onerror="showSoldOut()">
+    <div class="thumbnail" id="thumbnail" onclick="playVideo()">
+      <img src="{thumbnail_url}" alt="{property_name}" id="thumb-img">
       <div class="play-btn" id="play-btn"></div>
     </div>
     <div class="sold-out-overlay" id="sold-out-overlay">
@@ -137,9 +137,22 @@ def generate_youtube_property_html(property_name, video_url, video_id):
     embed.style.display = 'block';
     document.getElementById('yt-iframe').src = 'https://www.youtube.com/embed/{video_id}?autoplay=1';
   }}
+
+  // サムネイル読み込み後に非公開かどうか判定
+  // YouTubeの非公開動画は120x90の小さいデフォルト画像が返ってくる
+  window.addEventListener('load', function() {{
+    var img = document.getElementById('thumb-img');
+    if (img.naturalWidth <= 120) {{
+      showSoldOut();
+    }}
+  }});
+
   function showSoldOut() {{
     document.getElementById('thumbnail').style.display = 'none';
     document.getElementById('sold-out-overlay').style.display = 'flex';
+    // 問い合わせセクションを非表示
+    var cta = document.querySelector('.cta-section');
+    if (cta) cta.style.display = 'none';
   }}
 </script>
 </body>
@@ -163,9 +176,9 @@ def generate_youtube_index_html(properties):
         cards_html += f'''
     <a class="card" href="{page_url}" id="card-{video_id}">
       <div class="card-img">
-        <img src="{thumbnail_url}" alt="{prop["name"]}" 
-             onerror="markSoldOut('{video_id}')"
-             id="thumb-{video_id}">
+        <img src="{thumbnail_url}" alt="{prop["name"]}"
+             id="thumb-{video_id}"
+             onload="checkSoldOut('{video_id}', this)">
         <div class="play-overlay" id="play-{video_id}">▶</div>
         <div class="sold-out-overlay" id="overlay-{video_id}" style="display:none">
           <span class="sold-out-badge">販売終了</span>
@@ -239,6 +252,11 @@ def generate_youtube_index_html(properties):
   営業時間：9:00〜22:00　定休日：水曜日
 </footer>
 <script>
+  function checkSoldOut(videoId, img) {{
+    if (img.naturalWidth <= 120) {{
+      markSoldOut(videoId);
+    }}
+  }}
   function markSoldOut(videoId) {{
     var thumb = document.getElementById('thumb-' + videoId);
     var play = document.getElementById('play-' + videoId);
