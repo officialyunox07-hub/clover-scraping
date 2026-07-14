@@ -59,8 +59,8 @@
 </div>
 <div class="container">
   <div class="property-card">
-    <div class="thumbnail" onclick="playVideo()" id="thumbnail">
-      <img src="https://img.youtube.com/vi/kO8MN2GKL34/maxresdefault.jpg" alt="ベイクレストタワー" onerror="showSoldOut()">
+    <div class="thumbnail" id="thumbnail" onclick="playVideo()">
+      <img src="https://img.youtube.com/vi/kO8MN2GKL34/maxresdefault.jpg" alt="ベイクレストタワー" id="thumb-img">
       <div class="play-btn" id="play-btn"></div>
     </div>
     <div class="sold-out-overlay" id="sold-out-overlay">
@@ -95,9 +95,22 @@
     embed.style.display = 'block';
     document.getElementById('yt-iframe').src = 'https://www.youtube.com/embed/kO8MN2GKL34?autoplay=1';
   }
+
+  // サムネイル読み込み後に非公開かどうか判定
+  // YouTubeの非公開動画は120x90の小さいデフォルト画像が返ってくる
+  window.addEventListener('load', function() {
+    var img = document.getElementById('thumb-img');
+    if (img.naturalWidth <= 120) {
+      showSoldOut();
+    }
+  });
+
   function showSoldOut() {
     document.getElementById('thumbnail').style.display = 'none';
     document.getElementById('sold-out-overlay').style.display = 'flex';
+    // 問い合わせセクションを非表示
+    var cta = document.querySelector('.cta-section');
+    if (cta) cta.style.display = 'none';
   }
 </script>
 </body>
