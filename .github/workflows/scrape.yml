@@ -1,9 +1,9 @@
-name: 物件チェック＆LINE通知
+name: クローバースクレイピング＆LINE通知
 
 on:
   schedule:
-    - cron: '0 8 * * *'  # 毎日日本時間17時に実行（UTC8時=JST17時）
-  workflow_dispatch:       # 手動実行も可能
+    - cron: '0 8 * * *'  # 毎日JST17時
+  workflow_dispatch:
 
 jobs:
   scrape:
@@ -22,11 +22,8 @@ jobs:
       - name: ライブラリをインストール
         run: pip install -r requirements.txt
 
-      - name: クローバースクレイピングを実行
+      - name: スクリプトを実行
         env:
           LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
         run: python scrape_and_notify.py
-
-      - name: YouTubeページを生成
-        run: python generate_youtube_pages.py
