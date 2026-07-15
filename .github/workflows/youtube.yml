@@ -1,0 +1,26 @@
+name: YouTubeページ更新
+
+on:
+  schedule:
+    - cron: '2 10 * * *'  # 毎日JST19時2分
+  workflow_dispatch:
+
+jobs:
+  youtube:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Pythonをセットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: ライブラリをインストール
+        run: pip install -r requirements.txt
+
+      - name: YouTubeページを生成
+        run: python generate_youtube_pages.py
