@@ -187,7 +187,7 @@ def generate_youtube_index_html(properties):
       </div>
       <div class="card-body">
         <h2 class="card-title">{prop["name"]}</h2>
-        <p class="card-sub" id="sub-{video_id}">動画で物件をチェック</p>
+        <p class="card-sub" id="sub-{video_id}">動画で物件をチェック・お問い合わせはこちらから</p>
       </div>
     </a>'''
 
