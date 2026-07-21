@@ -14,7 +14,7 @@ import subprocess
 import urllib.parse
 
 NETLIFY_BASE_URL = "https://officialyunox07-hub.github.io/clover-scraping"
-GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfNblUPGNXTNBISb3reb4QjEA5dgFLONxZIkRZVvW6-PAN78w/viewform?usp=pp_url&entry.195312494="
+GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSe1mfdDaB84CmATLQIHMc5-YRvF-tco7KqzvYl3W1Wxf_Sy7Q/viewform?usp=pp_url&entry.195312494="
 CSV_FILE = "youtube_properties.csv"
 
 # ----------------------------------------
@@ -38,7 +38,7 @@ def generate_youtube_property_html(property_name, video_url, video_id):
     filename = f"youtube_property_{safe_name}.html"
     page_url = f"{NETLIFY_BASE_URL}/{filename}"
     thumbnail_url = get_thumbnail_url(video_id)
-    form_url = GOOGLE_FORM_URL + urllib.parse.quote(property_name)
+    form_url = GOOGLE_FORM_URL + urllib.parse.quote(video_url)
 
     html = f'''<!DOCTYPE html>
 <html lang="ja">
