@@ -14,7 +14,7 @@ import subprocess
 import urllib.parse
 
 NETLIFY_BASE_URL = "https://officialyunox07-hub.github.io/clover-scraping"
-GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSe1mfdDaB84CmATLQIHMc5-YRvF-tco7KqzvYl3W1Wxf_Sy7Q/viewform?usp=pp_url&entry.195312494="
+GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfNblUPGNXTNBISb3reb4QjEA5dgFLONxZIkRZVvW6-PAN78w/viewform?usp=pp_url&entry.195312494="
 CSV_FILE = "youtube_properties.csv"
 
 # ----------------------------------------
