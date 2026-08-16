@@ -179,7 +179,6 @@ def generate_youtube_index_html(properties):
         <img src="{thumbnail_url}" alt="{prop["name"]}"
              id="thumb-{video_id}"
              onload="checkSoldOut('{video_id}', this)">
-        <div class="play-overlay" id="play-{video_id}">▶</div>
         <div class="sold-out-overlay" id="overlay-{video_id}" style="display:none">
           <span class="sold-out-badge">販売終了</span>
           <span class="sold-out-text">現在この物件は販売終了しています</span>
@@ -259,12 +258,10 @@ def generate_youtube_index_html(properties):
   }}
   function markSoldOut(videoId) {{
     var thumb = document.getElementById('thumb-' + videoId);
-    var play = document.getElementById('play-' + videoId);
     var overlay = document.getElementById('overlay-' + videoId);
     var card = document.getElementById('card-' + videoId);
     var sub = document.getElementById('sub-' + videoId);
     if (thumb) thumb.style.display = 'none';
-    if (play) play.style.display = 'none';
     if (overlay) overlay.style.display = 'flex';
     if (card) card.classList.add('sold-out');
     if (sub) sub.textContent = '販売終了';
