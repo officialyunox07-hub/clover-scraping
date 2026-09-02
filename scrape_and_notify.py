@@ -8,6 +8,7 @@ import re
 import urllib.parse
 import subprocess
 import gspread
+import pytz
 from google.oauth2.service_account import Credentials
 
 # ============================================================
@@ -611,6 +612,31 @@ def main():
     filename, page_url, html_content = generate_property_html(latest_prop, station_text, feature_text, details, full_description)
 
     commit_html_to_github(filename, html_content)
+
+    # 日本時間で22時以降かチェック
+    jst = pytz.timezone('Asia/Tokyo')
+    now = datetime.now(jst)
+
+    if not TEST_MODE and now.hour >= 22:
+        print(f"  → 22時以降のためLINE送信をスキップ")
+        print(f"  → 翌日9時に送信するフラグを保存します")
+        # フラグをスプレッドシートに保存
+        try:
+            pending_sheet = spreadsheet.worksheet("翌日送信待ち")
+        except:
+            pending_sheet = spreadsheet.add_worksheet(title="翌日送信待ち", rows=100, cols=5)
+            pending_sheet.append_row(["物件名", "日付", "ページURL", "駅情報", "特徴", "画像URL"])
+        pending_sheet.append_row([
+            latest_prop["name"],
+            latest_prop["date"],
+            page_url,
+            station_text,
+            feature_text,
+            latest_prop["image_url"] or ""
+        ])
+        # 送信履歴には保存しない（翌日再検知のため）
+        print(f"  → フラグ保存完了！翌日9時に送信されます。")
+        return
 
     if TEST_MODE:
         print("  → テストモード：LINE送信スキップ")
