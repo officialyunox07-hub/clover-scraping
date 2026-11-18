@@ -482,7 +482,7 @@ def generate_index_html():
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>紹介物件一覧 | 理想のおうち案内所</title>
+  <title>紹介物件一覧 | THE RESIDENCE JOURNAL</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Shippori+Mincho:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {{
@@ -520,7 +520,7 @@ def generate_index_html():
 </head>
 <body>
 <header>
-  <div class="logo">理想のおうち案内所<span>CLOVER ESTATE</span></div>
+  <div class="logo">THE RESIDENCE JOURNAL<span>CLOVER ESTATE</span></div>
 </header>
 <div class="hero">
   <h1>🏠 紹介物件一覧</h1>
